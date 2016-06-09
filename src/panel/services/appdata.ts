@@ -28,21 +28,7 @@ const service = ($ngRedux, storage, config: ICommonConfig) => {
     appDefaults.widths = appDefaults.material.width.slice(0);
   }
 
-  /**
-   * Map service methods to state actions
-   */
-  const service = {
-    data: <AppDataService>{},
-    setAppData: (data: AppDataService) => {},
-  };
-
-  const mapStateToProps = (state: IRootReducer) => {
-    return state.settings;
-  };
-
-  $ngRedux.connect(mapStateToProps, { setAppData })(service);
-
-  service.setAppData(appDefaults);
+  $ngRedux.dispatch(setAppData(appDefaults));
 
   /**
    * When someone update the state -- sync storable data with localStorage
@@ -60,7 +46,9 @@ const service = ($ngRedux, storage, config: ICommonConfig) => {
 
   $ngRedux.subscribe(syncStorage);
 
-  return service;
+  return () => {
+    console.warn("AppData conntected to Redux, use state and actions instead");
+  };
 };
 
 app.factory("AppData", [
