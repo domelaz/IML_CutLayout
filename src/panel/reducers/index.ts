@@ -3,7 +3,7 @@ import { actions as a } from "../constants";
 
 const initState = {};
 
-const ui = (state = initState, action: IReduxAction) => {
+const settings = (state = initState, action: IReduxAction) => {
   let newState;
   switch (action.type) {
     case a.sync.SET_APPDATA: {
@@ -17,8 +17,8 @@ const ui = (state = initState, action: IReduxAction) => {
   return newState;
 };
 
-const reducers = {
-  ui,
+const reducers: IRootReducer = {
+  settings,
 };
 
 export default reducers;

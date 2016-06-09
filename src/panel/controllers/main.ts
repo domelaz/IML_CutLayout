@@ -56,7 +56,7 @@ const controller = (
    * Copy application state without useless params as options for Solver
    */
   $scope.getopt = () => {
-    const options = <ICommonOptions>omit($ngRedux.getState().ui, [
+    const options = <ICommonOptions>omit($ngRedux.getState().settings, [
       "material", "materials", "materialWidth", "printing",
     ]);
 
@@ -166,7 +166,7 @@ const controller = (
    * Отражение свойств state на $scope
    */
   const mapStateToProps = (state: IRootReducer) => {
-    return state.ui;
+    return state.settings;
   };
 
   const disconnect = $ngRedux.connect(mapStateToProps, {setAppData})($scope);

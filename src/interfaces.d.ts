@@ -96,17 +96,10 @@ interface IMaterials extends ILabeledValueItem {
 }
 
 /**
- * Application state
- */
-interface IAppState extends AppDataService {
-  status: string;
-}
-
-/**
  * Reducers
  */
 interface IRootReducer {
-  ui: IAppState
+  settings: AppDataService;
 }
 
 interface IReduxAction {
