@@ -12,8 +12,13 @@ const settings = (state = initSettings, action: IReduxAction): ISettings => {
       newState = state.merge(action.payload);
       break;
     }
+    case a.sync.UPDATE_APPDATA: {
+      const [ keyPath, value ] = action.payload;
+      newState = state.setIn(keyPath, value);
+      break;
+    }
     default: {
-      newState = assign({}, state);
+      newState = state;
     }
   }
   return newState;
