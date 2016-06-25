@@ -37,6 +37,11 @@ interface IMainScope extends ng.IScope, AppDataService {
   lang: string;
 
   /**
+   * Shared options
+   */
+  opt: ICommonOptions;
+
+  /**
    * Localization strings
    */
   t: ILocalizations;
@@ -168,7 +173,8 @@ const controller = (
    * Отражение свойств state на $scope
    */
   const mapStateToProps = (state: IRootReducer) => {
-    return state.settings;
+    const props = { opt: state.settings };
+    return props;
   };
 
   const disconnect = $ngRedux.connect(mapStateToProps, {setAppData})($scope);
@@ -192,7 +198,7 @@ const controller = (
    *
    * Clone widths of selected material
    */
-  $scope.$watch("material", (next: IMaterials) => {
+  $scope.$watch("opt.material", (next: IMaterials) => {
     if (next) {
       const update = {
         widths: next.width.slice(0, 1), // min width by default

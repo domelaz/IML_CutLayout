@@ -6,5 +6,5 @@ block body
     .grid-label.x4
       span {{t.labels.materialName}}
     .grid-input.x8
-      select(iml-select2, items="materials", active-item="material", update="setAppData")
-  .iml-material-label.after4.x8(ng-bind="material.label")
+      select(iml-select2, items="opt.materials", active-item="opt.material", update="setAppData")
+  .iml-material-label.after4.x8(ng-bind="opt.material.label")
