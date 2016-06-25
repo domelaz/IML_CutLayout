@@ -1,4 +1,4 @@
-import { omit, zipObject } from "lodash";
+import { omit } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
 import { applySolution, getContour, resetState, setAppData, setContour,
@@ -195,18 +195,6 @@ const controller = (
     setAppData, solverStop,
   })($scope);
   $scope.$on("$destroy", disconnect);
-
-  /**
-   * Dispatch "scalar" (binded with just `ng-model`) changes to Redux store
-   */
-  const bindings = ["nonWorkingArea", "printing", "restrict", "trimOffset",
-    "widths"];
-  $scope.$watchGroup(bindings, (next) => {
-    if (typeof(next) !== "undefined") {
-      const update = zipObject(bindings, next);
-      $scope.setAppData(update);
-    }
-  });
 
   /**
    * Cascade update

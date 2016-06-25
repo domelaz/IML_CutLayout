@@ -5,7 +5,7 @@ block body
   .iml-options-list
     ul
       li
-        input(type="checkbox" ng-disabled="!flow.isIdle" ng-model="opt.restrict.rotation")
+        input(type="checkbox" iml-immutable ng-disabled="!flow.isIdle" ng-model="opt.restrict.rotation")
         span(class="iml-option-label") {{t.labels.optArbitrary}}
   .iml-options-warning(ng-show="opt.restrict.rotation")
     span {{t.messages.warnArbitrary}}
