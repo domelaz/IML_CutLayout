@@ -7,11 +7,6 @@ import { setAppData } from "../actions";
  */
 interface IMainScope extends ng.IScope, AppDataService {
   /**
-   * Fetch common options for app and Solver
-   */
-  getopt(): ICommonOptions;
-
-  /**
    * Выполнить что-либо на стороне ILST
    */
   go(): void;
@@ -62,8 +57,8 @@ const controller = (
   /**
    * Copy application state without useless params as options for Solver
    */
-  $scope.getopt = () => {
-    const options = <ICommonOptions>omit($ngRedux.getState().settings, [
+  function getopt(): ICommonOptions {
+    const options = omit($scope.opt, [
       "material", "materials", "materialWidth", "printing",
     ]);
 
@@ -93,7 +88,7 @@ const controller = (
    * Run Solver loop
    */
   $scope.go = () => {
-    const options = $scope.getopt();
+    const options = getopt();
 
     /**
      * Run solver.start with contour and options, returns "main worker" Promise
@@ -235,7 +230,7 @@ const controller = (
          */
         const data = [
           result.data,
-          $scope.getopt(),
+          getopt(),
         ];
 
         const task = JSON.stringify(data, null, "  ");
