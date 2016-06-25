@@ -186,6 +186,10 @@ export const config: ICommonConfig = {
     ],
     nonWorkingArea: 16,
     printing: 50000,
+    restrict: {
+      overlap: false,
+      rotation: false,
+    },
     trimOffset: 3,
   },
 };
