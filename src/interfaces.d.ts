@@ -99,7 +99,7 @@ interface IMaterials extends ILabeledValueItem {
  * Reducers
  */
 interface IRootReducer {
-  settings: AppDataService;
+  settings: Immutable.Map<string, Object>;
 }
 
 interface IReduxAction {

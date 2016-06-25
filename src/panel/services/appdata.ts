@@ -36,7 +36,7 @@ const service = ($ngRedux, storage, config: ICommonConfig) => {
   const syncStorage = () => {
     const state = <IRootReducer>$ngRedux.getState();
     storable.forEach(key => {
-      const newValue = state.settings[key];
+      const newValue = state.settings.get(key);
       if (!isEqual(appDefaults[key], newValue)) {
         storage.set(key, JSON.stringify(newValue));
         appDefaults[key] = newValue;

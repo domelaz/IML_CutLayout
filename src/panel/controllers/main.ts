@@ -1,4 +1,5 @@
 import { omit, zipObject } from "lodash";
+import { fromJS } from "immutable";
 import { app } from "../index";
 import { setAppData } from "../actions";
 
@@ -168,7 +169,7 @@ const controller = (
    * Отражение свойств state на $scope
    */
   const mapStateToProps = (state: IRootReducer) => {
-    const props = { opt: state.settings };
+    const props = { opt: state.settings.toJS() };
     return props;
   };
 
@@ -212,7 +213,7 @@ const controller = (
 
     inspect: () => {
       const state = $ngRedux.getState();
-      console.log("State and scope", state, $scope);
+      console.log("State and scope", fromJS(state).toJS(), $scope);
     },
 
     saveTask: () => {

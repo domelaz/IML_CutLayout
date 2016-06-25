@@ -1,13 +1,15 @@
-import { assign } from "lodash";
+import { Map } from "immutable";
 import { actions as a } from "../constants";
 
-const initState = {};
+type ISettings = Immutable.Map<string, Object>
 
-const settings = (state = initState, action: IReduxAction) => {
+const initSettings = <ISettings>Map();
+
+const settings = (state = initSettings, action: IReduxAction): ISettings => {
   let newState;
   switch (action.type) {
     case a.sync.SET_APPDATA: {
-      newState = assign({}, state, action.payload);
+      newState = state.merge(action.payload);
       break;
     }
     default: {
@@ -17,7 +19,7 @@ const settings = (state = initState, action: IReduxAction) => {
   return newState;
 };
 
-const reducers: IRootReducer = {
+const reducers = {
   settings,
 };
 
