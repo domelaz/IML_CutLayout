@@ -1,11 +1,12 @@
 import { app } from "../index";
-
+import { pushSolution } from "../actions";
 /**
  * Import predefined solutions
  */
 import { solution as solution1 } from "./3075_eticetka.ai";
 
 const service = (
+  redux,
   $timeout: ng.ITimeoutService,
   $q: ng.IQService
   ): SolverSerivce => {
@@ -18,6 +19,7 @@ const service = (
    * Send solution to upstream
    */
   const notify = (solution: ISolution) => {
+    redux.dispatch(pushSolution(solution));
     deferred.notify(solution);
   };
 
@@ -71,4 +73,4 @@ const service = (
 /**
  * Отметимся в Ангуляре как сервис
  */
-app.factory("Solver", ["$timeout", "$q", service]);
+app.factory("Solver", ["$ngRedux", "$timeout", "$q", service]);

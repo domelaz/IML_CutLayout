@@ -99,12 +99,17 @@ interface IMaterials extends ILabeledValueItem {
  * Reducers
  */
 interface IRootReducer {
+  flow: IFlowState;
   settings: Immutable.Map<string, Object>;
 }
 
 interface IReduxAction {
   type: string;
   payload: any;
+}
+
+interface IFlowState {
+  solutions?: Immutable.List<ISolution>;
 }
 
 /**

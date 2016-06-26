@@ -27,6 +27,8 @@ interface IMainScope extends ng.IScope, AppDataService {
     testSolution(): void;
   };
 
+  flow: IFlowState;
+
   /**
    * App language
    */
@@ -169,7 +171,7 @@ const controller = (
    * Отражение свойств state на $scope
    */
   const mapStateToProps = (state: IRootReducer) => {
-    const props = { opt: state.settings.toJS() };
+    const props = { flow: state.flow, opt: state.settings.toJS() };
     return props;
   };
 
