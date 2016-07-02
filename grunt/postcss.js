@@ -8,7 +8,7 @@ module.exports = {
     options: {
       processors: [
         require("lost"),
-        require("postcss-cssnext")({ browsers: ["last 2 version"] }),
+        require("postcss-cssnext")({ browsers: ["last 3 version"] }),
       ],
     },
     src: "src/less/lost.css",
