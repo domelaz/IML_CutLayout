@@ -3,8 +3,8 @@ const ru: ILocalizations = {
     go: "Сделать раскладку",
   },
   commons: {
-    mm: "мм",
     cnt: "шт",
+    mm: "мм",
   },
   labels: {
     advancedOptions: "Настройки",
