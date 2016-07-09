@@ -1,5 +1,7 @@
 "use strict";
 
+const path = require("path");
+
 /**
  * Shortcut to platform
  *
@@ -39,6 +41,8 @@ if (process.env.GRUNT_HOSTS) {
   exec = commands.join(";");
 }
 
+const dist = path.join(__dirname, "..", "<%= dist %>");
+
 module.exports = {
   /**
    * Включение/выключение режима отладки CSXS
@@ -48,6 +52,18 @@ module.exports = {
   },
   debugoff: {
     command: isWindows ? "reg delete HKCU\\Software\\Adobe\\CSXS.<%= ccVersion %> /v PlayerDebugMode /f" : "defaults delete com.adobe.CSXS.<%= ccVersion %> PlayerDebugMode"
+  },
+  /**
+   * Build setup.exe
+   */
+  installer: {
+    command: isWindows ? ["iscc",
+      "/Dname=<%= pkg.name %>",
+      "/Dversion=<%= pkg.version %>",
+      "/Dsources=" + dist,
+      "/Durl=<%= pkg.repository.url%>",
+      "/Dgitrev=-<%= gitrev %>",
+      "misc\\installer\\script.iss"].join(" ") : "echo 'Unsupported platform'"
   },
   /**
    * Синхронизация кода с тестовыми машинами
