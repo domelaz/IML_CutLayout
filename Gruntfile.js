@@ -33,5 +33,17 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask("gitrev", "Inject latest commit hash", function() {
+    const done = this.async();
+    grunt.util.spawn({
+      cmd: "git",
+      args: ["log", "-1", "--pretty=%h"],
+      fallback: "",
+    }, function(err, result) {
+      grunt.config.data.gitrev = result.stdout;
+      done();
+    });
+  });
+
   grunt.registerTask("default", ["postcss", "less", "pug", "webpack", "copy"]);
 };
