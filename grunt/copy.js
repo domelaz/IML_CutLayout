@@ -2,6 +2,8 @@
 
 const path = require("path");
 
+const src = process.env.NODE_ENV === "development" ? [".debug"] : [];
+
 module.exports = {
   /**
    * "Доукомплектация" dist
@@ -9,10 +11,9 @@ module.exports = {
   extension: {
     expand: true,
     cwd: path.join(__dirname, "..", "<%= extSrc %>"),
-    src: [
-      ".debug",
+    src: src.concat([
       "CSXS/**",
-    ],
+    ]),
     dest: path.join(__dirname, "..", "<%= dist %>")
   },
 
@@ -25,13 +26,12 @@ module.exports = {
   deploy: {
     expand: true,
     cwd: path.join(__dirname, "..", "<%= dist %>"),
-    src: [
-      ".debug",
+    src: src.concat([
       "<%= cepDstPath %>/**",
       "CSXS/**",
       "jsx/**",
       "index.html",
-    ],
+    ]),
     dest: path.join(process.env.APPDATA || "/tmp/", "Adobe/CEP/extensions", "<%= pkg.name %>")
   }
 };
