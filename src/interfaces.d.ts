@@ -108,6 +108,8 @@ interface IReduxAction {
   payload: any;
 }
 
+type ISettings = Immutable.Map<string, any>
+
 interface IFlowState {
   solutions?: Immutable.List<ISolution>;
 }
