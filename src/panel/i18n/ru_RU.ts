@@ -1,6 +1,7 @@
 const ru: ILocalizations = {
   buttons: {
     go: "Сделать раскладку",
+    stop: "Остановить",
   },
   commons: {
     cnt: "шт",

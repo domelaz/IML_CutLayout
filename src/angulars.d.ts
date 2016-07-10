@@ -38,6 +38,7 @@ interface SolverSerivce {
 interface ILocalizations {
   buttons: {
     go: string;
+    stop: string;
   };
   commons: {
     mm: string;
