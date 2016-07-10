@@ -7,12 +7,15 @@ import rootReducer from "./reducers";
 
 const app = angular.module("iml", ["LocalStorageModule", "ngRedux"]);
 
+import "./middleware";
+
 app.config([
   "localStorageServiceProvider",
   "$ngReduxProvider",
   (localStorageServiceProvider, $ngReduxProvider) => {
     localStorageServiceProvider.setPrefix("iml");
-    $ngReduxProvider.createStoreWith(rootReducer);
+    const middlewares = ["loggerMiddleware"];
+    $ngReduxProvider.createStoreWith(rootReducer, middlewares);
 }]);
 
 /**
