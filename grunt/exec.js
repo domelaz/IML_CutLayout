@@ -42,6 +42,10 @@ if (process.env.GRUNT_HOSTS) {
 }
 
 const dist = path.join(__dirname, "..", "<%= dist %>");
+const zxpsign = path.join(__dirname, "..", "misc/installer/ZXPSignCMD", process.arch.replace(/^ia/, "win"), "ZXPSignCmd.exe");
+const zxpcert = "misc\\devCert.p12";
+const zxppass = "passw0rd";
+const zxpfile = "misc\\<%= pkg.name %>.zxp";
 
 module.exports = {
   /**
@@ -64,6 +68,43 @@ module.exports = {
       "/Durl=<%= pkg.repository.url%>",
       "/Dgitrev=-<%= gitrev %>",
       "misc\\installer\\script.iss"].join(" ") : "echo 'Unsupported platform'"
+  },
+  /**
+   * Signing extension: create self-signed certificate with plain password
+   * Once
+   */
+  selfsign: {
+    command: isWindows ? [
+      zxpsign,
+      "-selfSignedCert",
+      "RU", "TAT", "Taflex", "Omerta",
+      zxppass,
+      zxpcert,
+    ].join(" ") : "echo 'Unsupported platform'"
+  },
+  /**
+   * Sign extension with ^^^ certificate
+   */
+  sign: {
+    command: isWindows ? [
+      zxpsign,
+      "-sign",
+      dist,
+      zxpfile,
+      zxpcert,
+      zxppass,
+    ].join(" ") : "echo 'Unsupported platform'"
+  },
+  /**
+   * "Complete" distribution with info from signed .zxp package
+   */
+  signextract: {
+    command: [
+      "unzip",
+      "-o",
+      zxpfile,
+      "-d " + dist
+    ].join(" ")
   },
   /**
    * Синхронизация кода с тестовыми машинами

@@ -46,5 +46,5 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask("default", ["postcss", "less", "pug", "webpack", "copy"]);
-  grunt.registerTask("installer", ["clean", "default", "gitrev", "exec:installer"]);
+  grunt.registerTask("installer", ["clean", "default", "gitrev", "exec:sign", "exec:signextract", "exec:installer"]);
 };

@@ -45,6 +45,9 @@ Temporary Items
 # vim swap
 *.swp
 
+# signing certificate
+misc/devCert.p12
+
 node_modules/
 dist/
 src/*/build/
