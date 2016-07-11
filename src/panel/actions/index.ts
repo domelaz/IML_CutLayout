@@ -2,5 +2,5 @@
  * Entry point for actions
  */
 export { setAppData } from "./appSettings";
-export { swapSolution } from "./commons";
+export { resetState, swapSolution } from "./commons";
 export { pushSolution } from "./solver";

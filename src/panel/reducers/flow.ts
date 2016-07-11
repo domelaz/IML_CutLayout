@@ -1,4 +1,4 @@
-import { List, fromJS } from "immutable";
+import { List, Map, fromJS } from "immutable";
 import { assign, isFunction } from "lodash";
 import { actions as sync } from "../constants";
 
@@ -10,6 +10,10 @@ const initFlow: IFlowState = {
 };
 
 const commonReducers: IReducerComposition<ISettings> = {
+  [sync.RESET_STATE]: () => {
+    return Map<string, {}>(initFlow);
+  },
+
   [sync.SWAP_SOLUTION]: (state: ISettings, action: IAction<ISolution>) => {
     const newState = state.withMutations(map => {
       map

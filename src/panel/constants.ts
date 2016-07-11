@@ -5,6 +5,11 @@ const actions = {
   PUSH_SOLUTION: "PUSH_SOLUTION",
 
   /**
+   * Reset state except `settings`
+   */
+  RESET_STATE: "RESET_STATE",
+
+  /**
    * Set application settings with single Object
    */
   SET_APPDATA: "SET_APPDATA",

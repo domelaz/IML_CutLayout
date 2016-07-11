@@ -1,7 +1,7 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { setAppData, swapSolution } from "../actions";
+import { resetState, setAppData, swapSolution } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -148,6 +148,11 @@ const controller = (
       });
     };
 
+    /**
+     * Cleanup previous state
+     */
+    redux.dispatch(resetState());
+    
     /**
      * This method on ILST side provides <IFigure> object
      */
