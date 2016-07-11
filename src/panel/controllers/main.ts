@@ -51,7 +51,7 @@ interface IMainScope extends ng.IScope, AppDataService {
 }
 
 const controller = (
-  $ngRedux,
+  redux,
   $scope: IMainScope,
   strings,
   ILST: ILSTService,
@@ -182,7 +182,12 @@ const controller = (
     return props;
   };
 
-  const disconnect = $ngRedux.connect(mapStateToProps, {setAppData})($scope);
+  /**
+   * Mapping redux action to scope functions leads to lost signatures typings.
+   * So, I prefer use `redux.dispatch(action)` instead `this.action` except
+   * method called directly from directives.
+   */
+  const disconnect = redux.connect(mapStateToProps, {setAppData})($scope);
 
   $scope.$on("$destroy", disconnect);
 
@@ -208,7 +213,7 @@ const controller = (
       const update = {
         widths: next.width.slice(0, 1), // min width by default
       };
-      $scope.setAppData(update);
+      redux.dispatch(setAppData(update));
     }
   }, true);
 
@@ -221,7 +226,7 @@ const controller = (
     },
 
     inspect: () => {
-      const state = $ngRedux.getState();
+      const state = redux.getState();
       console.log("State and scope", fromJS(state).toJS(), $scope);
     },
 
