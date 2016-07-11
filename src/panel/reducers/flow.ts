@@ -16,6 +16,15 @@ const commonReducers: IReducerComposition<ISettings> = {
     return Map<string, {}>(initFlow);
   },
 
+  [sync.TOGGLE_APP]: (state, action) => {
+    const onOff = action.payload.state === "on" ? true : false;
+    const update: IFlowState = {
+      isIdle: onOff,
+      message: action.payload.message,
+    };
+    return state.merge(update);
+  },
+
   [sync.SWAP_SOLUTION]: (state: ISettings, action: IAction<ISolution>) => {
     const newState = state.withMutations(map => {
       map

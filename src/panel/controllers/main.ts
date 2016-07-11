@@ -1,7 +1,7 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { resetState, setAppData, swapSolution } from "../actions";
+import { resetState, setAppData, swapSolution, toggleApp } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -87,6 +87,7 @@ const controller = (
    */
   $scope.go = () => {
     const options = getopt();
+    const messages = $scope.t.status;
 
     /**
      * Run solver.start with contour and options, returns "main worker" Promise
@@ -99,7 +100,7 @@ const controller = (
      * When Solver finished
      */
     const solverDone = () => {
-
+      redux.dispatch(toggleApp("on", messages.done));
     };
 
     /**
@@ -113,7 +114,7 @@ const controller = (
      * Errors handler from Solver
      */
     const errSolver = (err) => {
-
+      redux.dispatch(toggleApp("on", err));
     };
 
     /**
@@ -140,9 +141,10 @@ const controller = (
     };
 
     /**
-     * Cleanup previous state
+     * Cleanup previous state, lock UI
      */
     redux.dispatch(resetState());
+    redux.dispatch(toggleApp("off", messages.started));
 
     /**
      * This method on ILST side provides <IFigure> object

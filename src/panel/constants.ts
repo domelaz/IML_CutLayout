@@ -20,6 +20,11 @@ const actions = {
   SWAP_SOLUTION: "SWAP_SOLUTION",
 
   /**
+   * Enable/disable UI controls
+   */
+  TOGGLE_APP: "TOGGLE_APP",
+
+  /**
    * Set single application setting
    */
   UPDATE_APPDATA: "UPDATE_APPDATA",
