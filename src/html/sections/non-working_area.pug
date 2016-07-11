@@ -9,5 +9,6 @@ block body
     input(
       type="number"
       min="0"
+      ng-disabled="!flow.isIdle"
       ng-model="opt.nonWorkingArea"
       name="nonWorkingArea")
