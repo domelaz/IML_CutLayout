@@ -43,11 +43,6 @@ interface IMainScope extends ng.IScope, AppDataService {
    * Localization strings
    */
   t: ILocalizations;
-
-  /**
-   * Результат ILST действия
-   */
-  status: string;
 }
 
 const controller = (
@@ -97,7 +92,6 @@ const controller = (
      * Run solver.start with contour and options, returns "main worker" Promise
      */
     const solverStart = (result: CEPResponse) => {
-      $scope.status = $scope.t.status.started;
       return solver.start(<IFigure>result.data, options);
     };
 
@@ -105,7 +99,7 @@ const controller = (
      * When Solver finished
      */
     const solverDone = () => {
-      $scope.status = $scope.t.status.done;
+
     };
 
     /**
@@ -113,14 +107,13 @@ const controller = (
      */
     const errIlst = (err) => {
       solver.stop();
-      $scope.status = $scope.t.status.fuckup + err;
     };
 
     /**
      * Errors handler from Solver
      */
     const errSolver = (err) => {
-      $scope.status = $scope.t.status.solverFail  + err;
+
     };
 
     /**
@@ -139,8 +132,6 @@ const controller = (
         handler: "applySolution",
       };
 
-      $scope.status = $scope.t.status.applying;
-
       ILST.dispatch(applySolution).then(() => {
         redux.dispatch(swapSolution(solution));
         // Apply remaining or new solutions in _queue (if any)
@@ -152,7 +143,7 @@ const controller = (
      * Cleanup previous state
      */
     redux.dispatch(resetState());
-    
+
     /**
      * This method on ILST side provides <IFigure> object
      */
@@ -277,7 +268,7 @@ const controller = (
         const solution = JSON.parse(solutionData.data);
         ILST.dispatch({ data: solution, handler: "applySolution"});
       } catch (e) {
-        $scope.status = "Not valid JSON";
+
       }
     },
   };

@@ -125,6 +125,7 @@ type ISettings = Immutable.Map<string, any>
 interface IFlowState {
   _queue?: ISolution[];
   isIdle?: boolean;
+  message?: string;
   solutions?: Immutable.List<ISolution>;
 }
 
