@@ -1,4 +1,4 @@
-import { List } from "immutable";
+import { List, fromJS } from "immutable";
 import { assign } from "lodash";
 import { actions as sync } from "../constants";
 
@@ -6,19 +6,19 @@ const initFlow: IFlowState = {
   solutions: List<ISolution>(),
 };
 
-const flow = (state = initFlow, action: IReduxAction): IFlowState => {
-  let newState;
+const flow = (jsState = initFlow, action: IReduxAction): IFlowState => {
+  const state = <ISettings>fromJS(jsState);
+  let newState: ISettings;
   switch (action.type) {
     case sync.PUSH_SOLUTION: {
-      const solutions = state.solutions.push(action.payload);
-      newState = assign({}, state, { solutions });
+      newState = state.update("solutions", s => s.push(action.payload));
       break;
     }
     default: {
       newState = state;
     }
   }
-  return newState;
+  return newState.toJS();
 };
 
 export {
