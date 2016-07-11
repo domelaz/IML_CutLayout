@@ -123,6 +123,7 @@ interface IAction<T> extends IReduxAction {
 type ISettings = Immutable.Map<string, any>
 
 interface IFlowState {
+  _queue?: ISolution[];
   solutions?: Immutable.List<ISolution>;
 }
 

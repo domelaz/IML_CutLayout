@@ -5,10 +5,22 @@ import { actions as sync } from "../constants";
 import { reducer as solver } from "./solver";
 
 const initFlow: IFlowState = {
+  _queue: [],
   solutions: List<ISolution>(),
 };
 
-const reducers = assign({}, solver);
+const commonReducers: IReducerComposition<ISettings> = {
+  [sync.SWAP_SOLUTION]: (state: ISettings, action: IAction<ISolution>) => {
+    const newState = state.withMutations(map => {
+      map
+      .update("_queue", s => s.rest())
+      .update("solutions", s => s.push(action.payload));
+    });
+    return newState;
+  },
+};
+
+const reducers = assign(commonReducers, solver);
 
 const flow = (jsState = initFlow, action: IReduxAction): IFlowState => {
   const state = <ISettings>fromJS(jsState);

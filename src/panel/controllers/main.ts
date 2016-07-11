@@ -1,7 +1,7 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { setAppData } from "../actions";
+import { setAppData, swapSolution } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -126,7 +126,14 @@ const controller = (
     /**
      * Pass Solver result to ILST
      */
-    const dispathSolution = (solution: ISolution) => {
+    const dispatchSolution = () => {
+      const state = <IFlowState>redux.getState().flow;
+
+      if (state._queue.length === 0) {
+        return;
+      }
+      const solution = state._queue[0];
+
       const applySolution: CEPCommand = {
         data: solution,
         handler: "applySolution",
@@ -135,9 +142,9 @@ const controller = (
       $scope.status = $scope.t.status.applying;
 
       ILST.dispatch(applySolution).then(() => {
-        if ($scope.status !== $scope.t.status.done) {
-          $scope.status = $scope.t.status.next;
-        }
+        redux.dispatch(swapSolution(solution));
+        // Apply remaining or new solutions in _queue (if any)
+        dispatchSolution();
       });
     };
 
@@ -157,7 +164,7 @@ const controller = (
      * Dispatch solutions coming from Solver into ILST
      * until Solver is done or user press Abort somehow
      */
-    runner.then(solverDone, errSolver, dispathSolution);
+    runner.then(solverDone, errSolver, dispatchSolution);
   };
 
   /**
