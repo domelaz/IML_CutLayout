@@ -1,12 +1,12 @@
 import { isArray } from "lodash";
-import { actions as a } from "../constants";
+import { actions as sync } from "../constants";
 
 export function setAppData(...args): IReduxAction {
   // Pass object to Map.merge
   if (args.length === 1) {
     return {
       payload: args[0],
-      type: a.sync.SET_APPDATA,
+      type: sync.SET_APPDATA,
     };
   }
 
@@ -14,7 +14,7 @@ export function setAppData(...args): IReduxAction {
   if (isArray(args[0]) && args.length > 1) {
     return {
       payload: args,
-      type: a.sync.UPDATE_APPDATA,
+      type: sync.UPDATE_APPDATA,
     };
   }
 };

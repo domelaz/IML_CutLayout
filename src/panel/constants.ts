@@ -1,8 +1,13 @@
 const actions = {
-  sync: {
-    SET_APPDATA: "SET_APPDATA",
-    UPDATE_APPDATA: "UPDATE_APPDATA",
-  },
+  /**
+   * Set application settings with single Object
+   */
+  SET_APPDATA: "SET_APPDATA",
+
+  /**
+   * Set single application setting
+   */
+  UPDATE_APPDATA: "UPDATE_APPDATA",
 };
 
 export {
