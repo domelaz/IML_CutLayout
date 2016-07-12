@@ -6,6 +6,7 @@ import { reducer as solver } from "./solver";
 
 const initFlow: IFlowState = {
   _queue: [],
+  ilstBusy: false,
   isIdle: true,
   message: "Ready",
   solutions: List<ISolution>(),
