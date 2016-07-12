@@ -1,5 +1,10 @@
 const actions = {
   /**
+   * Deals with promised ILST command
+   */
+  CEP_ASYNC: "CEP_ASYNC",
+
+  /**
    * Handle ILST error
    */
   CEP_ERROR: "CEP_ERROR",

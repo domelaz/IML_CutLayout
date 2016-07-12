@@ -166,6 +166,11 @@ interface CEPCommand {
    * Набор данных для этого метода
    */
   data?: any;
+
+  /**
+   * Status bar message
+   */
+  message?: string;
 }
 
 /**

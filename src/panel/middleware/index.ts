@@ -1,1 +1,2 @@
+import "./ilstMiddleware";
 import "./loggerMiddleware";

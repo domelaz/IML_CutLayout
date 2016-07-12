@@ -14,7 +14,7 @@ app.config([
   "$ngReduxProvider",
   (localStorageServiceProvider, $ngReduxProvider) => {
     localStorageServiceProvider.setPrefix("iml");
-    const middlewares = ["loggerMiddleware"];
+    const middlewares = ["ilstMiddleware", "loggerMiddleware"];
     $ngReduxProvider.createStoreWith(rootReducer, middlewares);
 }]);
 
