@@ -2,12 +2,14 @@ import { app } from "../index";
 
 const css = {
   activeWidthClass: "iml-width--selected",
+  disabledState: "iml-width--disabled",
   widthsClass: "iml-width",
   wrapperClass: "iml-widths",
 };
 
 const wrapper = `<div class="${css.wrapperClass}">
   <span
+    ng-class="stickClasses()"
     ng-click="toggle({item: $index})"
     ng-repeat="item in items track by $index">
   <span>{{setTitle({item: $index})}}</span>
@@ -16,39 +18,16 @@ const wrapper = `<div class="${css.wrapperClass}">
 const directive = ($compile) => {
   return {
     link: (scope, element) => {
-      const toggle = (event) => {
-        const target = jQuery(event.target);
-
-        if (target.hasClass(css.wrapperClass)) {
-          // Hit between the buttons
-          return;
+      scope.stickClasses = function() {
+        let classes = [ css.widthsClass ];
+        if (this.selected[this.$index]) {
+          classes.push(css.activeWidthClass);
         }
-
-        const value = parseFloat(target.text());
-
-        if (isNaN(value)) {
-          return;
+        if (!scope.enabled) {
+          classes.push(css.disabledState);
         }
-
-        let widths = typeof(scope.widths) === "string"
-          ? scope.widths.split(/[ ,]/).map(parseFloat)
-          : scope.widths.slice(0);
-
-        if (widths.indexOf(value) === -1) {
-          target.addClass(css.activeWidthClass);
-          widths.push(value);
-        } else {
-          if (widths.length > 1) {
-            target.removeClass(css.activeWidthClass);
-            widths.splice(scope.widths.indexOf(value), 1);
-          }
-        };
-        scope.$apply(() => {
-          scope.setAppData({ "widths": widths.sort() });
-        });
+        return classes.join(" ");
       };
-
-      element.on("click", toggle);
 
       element.on("$destroy", () => {
         element.off();
