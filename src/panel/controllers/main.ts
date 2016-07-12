@@ -1,7 +1,8 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { resetState, setAppData, swapSolution, toggleApp } from "../actions";
+import { resetState, setAppData, setContour, swapSolution,
+  toggleApp } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -92,8 +93,10 @@ const controller = (
     /**
      * Run solver.start with contour and options, returns "main worker" Promise
      */
-    const solverStart = (result: CEPResponse) => {
-      return solver.start(<IFigure>result.data, options);
+    const runSolver = (result: CEPResponse) => {
+      const contour = <IFigure>result.data;
+      redux.dispatch(setContour(contour));
+      return solver.start(contour, options);
     };
 
     /**
@@ -156,7 +159,7 @@ const controller = (
     /**
      * Here we go! Get initial contour from ILST and pass it to Solver
      */
-    const runner = ILST.dispatch(getContour).then(solverStart, errIlst);
+    const runner = ILST.dispatch(getContour).then(runSolver, errIlst);
 
     /**
      * Dispatch solutions coming from Solver into ILST

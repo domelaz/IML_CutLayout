@@ -35,6 +35,11 @@ const actions = {
   SET_APPDATA: "SET_APPDATA",
 
   /**
+   * Save contour in state
+   */
+  SET_CONTOUR: "SET_CONTOUR",
+
+  /**
    * Pick successfuly applied solution from temporary queue
    */
   SWAP_SOLUTION: "SWAP_SOLUTION",

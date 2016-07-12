@@ -43,6 +43,10 @@ const reducer: IReducerComposition<ISettings> = {
     };
     return state.merge(update);
   },
+
+  [sync.SET_CONTOUR]: (state: ISettings, action: IAction<IFigure>) => {
+    return state.set("contour", action.payload);
+  },
 };
 
 export {

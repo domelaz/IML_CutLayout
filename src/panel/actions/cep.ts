@@ -21,3 +21,10 @@ export const cepHandle = (response: CEPResponse): IAction<CEPResponse> => {
     type: sync.CEP_HANDLE,
   };
 };
+
+export const setContour = (contour: IFigure): IAction<IFigure> => {
+  return {
+    payload: contour,
+    type: sync.SET_CONTOUR,
+  };
+};
