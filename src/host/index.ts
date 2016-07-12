@@ -5,15 +5,18 @@ import { config } from "../config";
  * Диспетчер команд CEP в Иллюстратор, великий и ужасный.
  *
  * @param {CEPCommand} cmd
- * @returns {string} JSON encoded CEPResponse
+ * @returns {string} JSON encoded CEPResponse or CEPError
  */
 function marshal(cmd: CEPCommand): string {
-  const executor = cepHandlers[cmd.handler];
+  const { handler, data } = cmd;
+  const executor = cepHandlers[handler];
   try {
-    const result = executor(cmd.data);
+    const result: CEPResponse = executor(data);
     return JSON.stringify(result);
-  } catch (err) {
-    return JSON.stringify({ error: err, status: "failure" });
+  } catch (error) {
+    delete error.source; // Drop source code, too high CPU consumption here
+    const facepalm: CEPError = { error, handler };
+    return JSON.stringify(facepalm);
   }
 }
 

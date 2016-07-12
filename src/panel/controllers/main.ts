@@ -106,7 +106,7 @@ const controller = (
     /**
      * Errors handler from ILST
      */
-    const errIlst = (err) => {
+    const errIlst = (err: CEPError) => {
       solver.stop();
     };
 

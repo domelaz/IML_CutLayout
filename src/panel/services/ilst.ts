@@ -15,7 +15,7 @@ const service = (
     const executor = `${config.connector}(${JSON.stringify(command)})`;
     cs.evalScript(executor, (result) => {
       try {
-        const response = <CEPResponse>JSON.parse(result);
+        const response = <CEPResponse & CEPError>JSON.parse(result);
         if (response.error) {
           deferred.reject(response.error);
         } else {

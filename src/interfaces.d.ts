@@ -130,6 +130,20 @@ interface IFlowState {
 }
 
 /**
+ * Illustrator Error Struct
+ */
+interface ILSTError {
+  end?: number;
+  fileName?: string;
+  line?: number;
+  message: string;
+  name?: string;
+  number?: number;
+  source?: string;
+  start?: number;
+}
+
+/**
  * Протокол CEP->ILST
  */
 interface CEPCommand {
@@ -154,14 +168,22 @@ interface CEPResponse {
   status: string;
 
   /**
-   * Error object
-   */
-  error?: any;
-
-  /**
    * Данные, возвращаемые методом
    */
   data?: any;
+}
+
+/**
+ * ILST Error -> CEP
+ */
+interface CEPError {
+
+  error: ILSTError;
+
+  /**
+   * ILST method
+   */
+  handler: string;
 }
 
 /**
