@@ -2,4 +2,8 @@ extends common
 block vars
   - var moreClasses = ""
 block body
-  button(ng-click="go()") {{t.buttons.go}}
+  div(ng-switch on="flow.isIdle")
+    div(ng-switch-when="true")
+      button(ng-click="solverStart()") {{t.buttons.go}}
+    div(ng-switch-when="false")
+      button(ng-click="solverStop()") {{t.buttons.stop}}

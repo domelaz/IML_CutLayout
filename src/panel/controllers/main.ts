@@ -1,8 +1,8 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { resetState, setAppData, setContour, swapSolution,
-  toggleApp } from "../actions";
+import { resetState, setAppData, setContour, solverStart,
+  solverStop, swapSolution, toggleApp } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -11,7 +11,7 @@ interface IMainScope extends ng.IScope, AppDataService {
   /**
    * Выполнить что-либо на стороне ILST
    */
-  go(): void;
+  solverStart(): void;
 
   /**
    * Dispatch app settings to Redux store
@@ -86,7 +86,7 @@ const controller = (
   /**
    * Run Solver loop
    */
-  $scope.go = () => {
+  $scope.solverStart = function() {
     const options = getopt();
     const messages = $scope.t.status;
 
@@ -96,6 +96,7 @@ const controller = (
     const runSolver = (result: CEPResponse) => {
       const contour = <IFigure>result.data;
       redux.dispatch(setContour(contour));
+      redux.dispatch(solverStart(messages.next));
       return solver.start(contour, options);
     };
 
@@ -103,7 +104,14 @@ const controller = (
      * When Solver finished
      */
     const solverDone = () => {
-      redux.dispatch(toggleApp("on", messages.done));
+      const state = <IFlowState>redux.getState().flow;
+      let message;
+      if (state.error) {
+        message = `${state.handler}: ${state.error.message}`;
+      } else {
+        message = messages.done;
+      }
+      redux.dispatch(toggleApp("on", message));
     };
 
     /**
@@ -188,8 +196,9 @@ const controller = (
    * So, I prefer use `redux.dispatch(action)` instead `this.action` except
    * method called directly from directives.
    */
-  const disconnect = redux.connect(mapStateToProps, {setAppData})($scope);
-
+  const disconnect = redux.connect(mapStateToProps, {
+    setAppData, solverStop,
+  })($scope);
   $scope.$on("$destroy", disconnect);
 
   /**
