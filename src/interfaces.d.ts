@@ -103,9 +103,21 @@ interface IRootReducer {
   settings: Immutable.Map<string, Object>;
 }
 
+interface IReducerComposition<T> {
+  [method: string]: IReduxReducer<T>;
+}
+
+interface IReduxReducer<T> {
+  (state: T, action: IReduxAction): T;
+}
+
 interface IReduxAction {
   type: string;
   payload: any;
+}
+
+interface IAction<T> extends IReduxAction {
+  payload: T;
 }
 
 type ISettings = Immutable.Map<string, any>

@@ -1,8 +1,8 @@
 import { actions as sync } from "../constants";
 
-export function pushSolution(data): IReduxAction {
+export function pushSolution(solution: ISolution): IAction<ISolution> {
   return {
-    payload: data,
+    payload: solution,
     type: sync.PUSH_SOLUTION,
   };
 };
