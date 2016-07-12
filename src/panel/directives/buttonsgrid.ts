@@ -66,8 +66,16 @@ const directive = ($compile) => {
         element.off();
       });
     },
-    require: "ngModel",
+
     restrict: "E",
+    scope: {
+      enabled: "=",
+      items: "<",
+      selected: "<",
+      setTitle: "&setTitle",
+      toggle: "&toggle",
+    },
+    transclude: true,
   };
 };
 
