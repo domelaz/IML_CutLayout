@@ -13,6 +13,7 @@ const initFlow: IFlowState = {
   isIdle: true,
   message: "Ready",
   solutions: List<ISolution>(),
+  solverBusy: false,
 };
 
 const commonReducers: IReducerComposition<ISettings> = {

@@ -138,6 +138,7 @@ interface IFlowState {
   isIdle?: boolean;
   message?: string;
   solutions?: Immutable.List<ISolution>;
+  solverBusy?: boolean;
 }
 
 /**
