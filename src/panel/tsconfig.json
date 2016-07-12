@@ -32,6 +32,7 @@
     "./controllers/index.ts",
     "./controllers/main.ts",
     "./controllers/thememanager.ts",
+    "./directives/buttonsgrid.ts",
     "./index.ts",
     "./services/3075_eticetka.ai.ts",
     "./services/csInterface.ts",
