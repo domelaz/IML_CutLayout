@@ -49,4 +49,4 @@ const directive = ($compile) => {
   };
 };
 
-app.directive("imlWidths", ["$compile", directive]);
+app.directive("imlButtonsGrid", ["$compile", directive]);
