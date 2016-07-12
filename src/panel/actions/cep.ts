@@ -14,3 +14,10 @@ export const cepError = (err: CEPError): IAction<CEPError> => {
     type: sync.CEP_ERROR,
   };
 };
+
+export const cepHandle = (response: CEPResponse): IAction<CEPResponse> => {
+  return {
+    payload: response,
+    type: sync.CEP_HANDLE,
+  };
+};

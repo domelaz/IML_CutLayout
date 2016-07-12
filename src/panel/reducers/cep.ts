@@ -17,6 +17,19 @@ const reducer: IReducerComposition<ISettings> = {
   },
 
   /**
+   * Release ILST
+   */
+  [sync.CEP_HANDLE]: (state: ISettings, action: IAction<CEPResponse>) => {
+    const { status } = action.payload;
+
+    const update: IFlowState = {
+      ilstBusy: false,
+      message: `"${state.get("handler")}": ${status}`,
+    };
+    return state.merge(update);
+  },
+
+  /**
    * Handle ILST error
    */
   [sync.CEP_ERROR]: (state: ISettings, action: IAction<CEPError>) => {

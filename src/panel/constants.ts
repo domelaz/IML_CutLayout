@@ -5,6 +5,11 @@ const actions = {
   CEP_ERROR: "CEP_ERROR",
 
   /**
+   * Release ILST lock
+   */
+  CEP_HANDLE: "CEP_HANDLE",
+
+  /**
    * Lock ILST
    */
   CEP_RUNNING: "CEP_RUNNING",
