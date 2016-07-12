@@ -18,7 +18,7 @@ const render = (values: number[], selected: number[]) => {
   return `<div class="${css.wrapperClass}">${wrapped}</div>`;
 };
 
-const directive = () => {
+const directive = ($compile) => {
   return {
     link: (scope, element, attrs) => {
       scope.$watch(attrs.ngModel, (next: IMaterials, prev: IMaterials) => {
@@ -71,4 +71,4 @@ const directive = () => {
   };
 };
 
-app.directive("imlWidths", [directive]);
+app.directive("imlWidths", ["$compile", directive]);
