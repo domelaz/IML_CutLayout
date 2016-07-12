@@ -131,6 +131,7 @@ type ISettings = Immutable.Map<string, any>
 interface IFlowState {
   _queue?: ISolution[];
   cepCommand?: string;
+  error?: ILSTError;
   handler?: string;
   ilstBusy?: boolean;
   isIdle?: boolean;

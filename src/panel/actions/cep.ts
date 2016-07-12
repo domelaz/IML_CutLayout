@@ -7,3 +7,10 @@ export const cepRunning = (cepCommand: string, handler: string,
     type: sync.CEP_RUNNING,
   };
 };
+
+export const cepError = (err: CEPError): IAction<CEPError> => {
+  return {
+    payload: err,
+    type: sync.CEP_ERROR,
+  };
+};

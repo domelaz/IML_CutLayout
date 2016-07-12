@@ -1,5 +1,10 @@
 const actions = {
   /**
+   * Handle ILST error
+   */
+  CEP_ERROR: "CEP_ERROR",
+
+  /**
    * Lock ILST
    */
   CEP_RUNNING: "CEP_RUNNING",
