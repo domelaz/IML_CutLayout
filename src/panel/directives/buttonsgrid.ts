@@ -6,28 +6,16 @@ const css = {
   wrapperClass: "iml-widths",
 };
 
-const render = (values: number[], selected: number[]) => {
-  let wrapped = "";
-  values.forEach(val => {
-    let classes = [css.widthsClass];
-    if (selected.lastIndexOf(val) !== -1) {
-      classes.push(css.activeWidthClass);
-    }
-    wrapped += `<span class="${classes.join(" ")}"><span>${val}</span></span>`;
-  });
-  return `<div class="${css.wrapperClass}">${wrapped}</div>`;
-};
+const wrapper = `<div class="${css.wrapperClass}">
+  <span
+    ng-click="toggle({item: $index})"
+    ng-repeat="item in items track by $index">
+  <span>{{setTitle({item: $index})}}</span>
+</div>`;
 
 const directive = ($compile) => {
   return {
-    link: (scope, element, attrs) => {
-      scope.$watch(attrs.ngModel, (next: IMaterials, prev: IMaterials) => {
-        if (next) {
-          const data = render(next.width, scope.widths);
-          element.html(data);
-        }
-      }, true);
-
+    link: (scope, element) => {
       const toggle = (event) => {
         const target = jQuery(event.target);
 
@@ -65,6 +53,9 @@ const directive = ($compile) => {
       element.on("$destroy", () => {
         element.off();
       });
+
+      const content = $compile(wrapper)(scope);
+      element.replaceWith(content);
     },
 
     restrict: "E",
