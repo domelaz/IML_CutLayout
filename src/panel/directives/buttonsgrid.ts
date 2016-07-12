@@ -1,19 +1,21 @@
 import { app } from "../index";
 
-const wrapperClass = "iml-widths";
-const widthsClass = "iml-width";
-const activeWidthClass = "iml-width--selected";
+const css = {
+  activeWidthClass: "iml-width--selected",
+  widthsClass: "iml-width",
+  wrapperClass: "iml-widths",
+};
 
 const render = (values: number[], selected: number[]) => {
   let wrapped = "";
   values.forEach(val => {
-    let classes = [widthsClass];
+    let classes = [css.widthsClass];
     if (selected.lastIndexOf(val) !== -1) {
-      classes.push(activeWidthClass);
+      classes.push(css.activeWidthClass);
     }
     wrapped += `<span class="${classes.join(" ")}"><span>${val}</span></span>`;
   });
-  return `<div class="${wrapperClass}">${wrapped}</div>`;
+  return `<div class="${css.wrapperClass}">${wrapped}</div>`;
 };
 
 const link = (scope, element, attrs) => {
@@ -27,7 +29,7 @@ const link = (scope, element, attrs) => {
   const toggle = (event) => {
     const target = jQuery(event.target);
 
-    if (target.hasClass(wrapperClass)) {
+    if (target.hasClass(css.wrapperClass)) {
       // Hit between the buttons
       return;
     }
@@ -43,11 +45,11 @@ const link = (scope, element, attrs) => {
       : scope.widths.slice(0);
 
     if (widths.indexOf(value) === -1) {
-      target.addClass(activeWidthClass);
+      target.addClass(css.activeWidthClass);
       widths.push(value);
     } else {
       if (widths.length > 1) {
-        target.removeClass(activeWidthClass);
+        target.removeClass(css.activeWidthClass);
         widths.splice(scope.widths.indexOf(value), 1);
       }
     };
