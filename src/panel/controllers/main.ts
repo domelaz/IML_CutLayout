@@ -1,8 +1,8 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { resetState, setAppData, setContour, solverStart,
-  solverStop, swapSolution, toggleApp } from "../actions";
+import { getContour, resetState, setAppData, setContour,
+  solverStart, solverStop, swapSolution, toggleApp } from "../actions";
 
 /**
  * Интерфейс $scope
@@ -158,16 +158,9 @@ const controller = (
     redux.dispatch(toggleApp("off", messages.started));
 
     /**
-     * This method on ILST side provides <IFigure> object
-     */
-    const getContour: CEPCommand = {
-      handler: "getContour",
-    };
-
-    /**
      * Here we go! Get initial contour from ILST and pass it to Solver
      */
-    const runner = ILST.dispatch(getContour).then(runSolver, errIlst);
+    const runner = redux.dispatch(getContour()).then(runSolver, errIlst);
 
     /**
      * Dispatch solutions coming from Solver into ILST
@@ -249,7 +242,7 @@ const controller = (
         return; // User hit Cancel
       }
 
-      ILST.dispatch({handler: "getContour"}).then(result => {
+      redux.dispatch(getContour()).then(result => {
         /**
          * @fixme Херовско станет, если сигнатура `solver.start` изменится
          */
