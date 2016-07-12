@@ -40,6 +40,21 @@ const actions = {
   SET_CONTOUR: "SET_CONTOUR",
 
   /**
+   * Abort solver execution
+   */
+  SOLVER_ABORT: "SOLVER_ABORT",
+
+  /**
+   * Finish solver execution
+   */
+  SOLVER_DONE: "SOLVER_DONE",
+
+  /**
+   * Start solver execution
+   */
+  SOLVER_START: "SOLVER_START",
+
+  /**
    * Pick successfuly applied solution from temporary queue
    */
   SWAP_SOLUTION: "SWAP_SOLUTION",

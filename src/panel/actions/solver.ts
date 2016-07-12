@@ -6,3 +6,17 @@ export function pushSolution(solution: ISolution): IAction<ISolution> {
     type: sync.PUSH_SOLUTION,
   };
 };
+
+export function solverStop(reason: string): IReduxAction {
+  return {
+    payload: reason,
+    type: sync.SOLVER_ABORT,
+  };
+};
+
+export function solverStart(message?: string) {
+  return {
+    payload: message,
+    type: sync.SOLVER_START,
+  };
+};
