@@ -1,14 +1,18 @@
-extends common
-block vars
-  - var moreClasses = "iml-section--widths"
-block body
+//- @fixme broken inheritance
+.iml-section.iml-section-theme.iml-section--widths(ng-controller="ctrlWidths")
   .iml-input-group
     .grid-label.x4
       span {{t.labels.materialWidth}}
         span(class="iml-append--comma") {{t.commons.mm}}
     .grid-input.x8
       input(type="text",
-        ng-model="opt.widths",
+        ng-model="selected",
         disabled)
   .x12
-    iml-buttons-grid(ng-model="opt.material")
+    iml-buttons-grid(
+      enabled="flow.isIdle"
+      items="items"
+      selected="selected"
+      set-title="setTitle(item)"
+      toggle="setWidth(item)"
+    )
