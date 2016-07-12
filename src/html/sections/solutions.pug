@@ -1,0 +1,12 @@
+extends common
+block vars
+  - var moreClasses = ""
+block body
+  .x12(ng-controller="ctrlSolutions")
+    iml-buttons-grid(
+      enabled="flow.isIdle"
+      items="items"
+      selected="selected"
+      set-title="setTitle(item)"
+      toggle="update(item)"
+    )
