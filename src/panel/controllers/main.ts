@@ -1,7 +1,7 @@
 import { omit, zipObject } from "lodash";
 import { fromJS } from "immutable";
 import { app } from "../index";
-import { getContour, resetState, setAppData, setContour,
+import { applySolution, getContour, resetState, setAppData, setContour,
   solverStart, solverStop, swapSolution, toggleApp } from "../actions";
 
 /**
@@ -138,13 +138,7 @@ const controller = (
         return;
       }
       const solution = state._queue[0];
-
-      const applySolution: CEPCommand = {
-        data: solution,
-        handler: "applySolution",
-      };
-
-      ILST.dispatch(applySolution).then(() => {
+      redux.dispatch(applySolution(solution, messages.applying)).then(() => {
         redux.dispatch(swapSolution(solution));
         // Apply remaining or new solutions in _queue (if any)
         dispatchSolution();
@@ -273,9 +267,9 @@ const controller = (
 
       try {
         const solution = JSON.parse(solutionData.data);
-        ILST.dispatch({ data: solution, handler: "applySolution"});
+        redux.dispatch(applySolution(solution));
       } catch (e) {
-
+        redux.dispatch(toggleApp("on", "Invalid JSON provided"));
       }
     },
   };
