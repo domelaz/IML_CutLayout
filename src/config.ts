@@ -190,6 +190,7 @@ export const config: ICommonConfig = {
       overlap: false,
       rotation: false,
     },
+    solutions: [],
     trimOffset: 3,
   },
   ilst: {

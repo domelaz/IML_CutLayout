@@ -3,4 +3,5 @@
  */
 import "./main";
 import "./thememanager";
+import "./solutions";
 import "./widths";

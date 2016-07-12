@@ -57,7 +57,7 @@ const controller = (
    */
   function getopt(): ICommonOptions {
     const options = omit($scope.opt, [
-      "material", "materials", "materialWidth", "printing",
+      "material", "materials", "materialWidth", "printing", "solutions",
     ]);
 
     /**

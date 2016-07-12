@@ -89,6 +89,11 @@ interface AppDataService extends ICommonOptions {
    * Тираж, шт.
    */
   printing?: number;
+
+  /**
+   * Solutions selected by user
+   */
+  solutions?: boolean[];
 }
 
 interface IValueItem {
