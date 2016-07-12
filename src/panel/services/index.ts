@@ -3,6 +3,5 @@
  */
 import "./appdata";
 import "./commonConfig";
-import "./ilst";
 import "./csInterface";
 import "./solver";

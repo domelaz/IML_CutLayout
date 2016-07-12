@@ -50,7 +50,6 @@ const controller = (
   redux,
   $scope: IMainScope,
   strings,
-  ILST: ILSTService,
   solver: SolverSerivce
   ) => {
   /**
@@ -219,7 +218,10 @@ const controller = (
    */
   $scope.debug = {
     createSolution: () => {
-      ILST.dispatch({ handler: "solution" });
+      redux.dispatch({
+        payload: { handler: "solution" },
+        type: "CEP_ASYNC",
+      });
     },
 
     inspect: () => {
@@ -282,7 +284,6 @@ app.controller("ctrlMain", [
   "$ngRedux",
   "$scope",
   "Strings",
-  "ILST",
   "Solver",
   controller,
 ]);
