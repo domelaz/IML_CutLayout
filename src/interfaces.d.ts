@@ -120,10 +120,18 @@ interface IAction<T> extends IReduxAction {
   payload: T;
 }
 
+interface IActionCEPRunning {
+  cepCommand: string;
+  handler: string;
+  message?: string;
+}
+
 type ISettings = Immutable.Map<string, any>
 
 interface IFlowState {
   _queue?: ISolution[];
+  cepCommand?: string;
+  handler?: string;
   ilstBusy?: boolean;
   isIdle?: boolean;
   message?: string;

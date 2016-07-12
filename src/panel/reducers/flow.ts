@@ -2,6 +2,7 @@ import { List, Map, fromJS } from "immutable";
 import { assign, isFunction } from "lodash";
 import { actions as sync } from "../constants";
 
+import { reducer as cep } from "./cep";
 import { reducer as solver } from "./solver";
 
 const initFlow: IFlowState = {
@@ -36,7 +37,7 @@ const commonReducers: IReducerComposition<ISettings> = {
   },
 };
 
-const reducers = assign(commonReducers, solver);
+const reducers = assign(commonReducers, cep, solver);
 
 const flow = (jsState = initFlow, action: IReduxAction): IFlowState => {
   const state = <ISettings>fromJS(jsState);

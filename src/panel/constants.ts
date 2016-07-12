@@ -1,5 +1,10 @@
 const actions = {
   /**
+   * Lock ILST
+   */
+  CEP_RUNNING: "CEP_RUNNING",
+
+  /**
    * Handle solution from Solver
    */
   PUSH_SOLUTION: "PUSH_SOLUTION",
