@@ -68,35 +68,6 @@ export const applySolution = (data: ISolution): CEPResponse => {
   const mZero = app.getTranslationMatrix(deltaX - origX, deltaY - origY);
 
   /**
-   * Слой высечек
-   */
-  const layoutLayer = getLayer(doc, "layout");
-  const placementMarker = layoutLayer.pathItems.add();
-
-  /**
-   * Размещение высечек на слой "layout"
-   */
-  for (let i = 0, l = data.cuts.length; i < l; i++) {
-    const c = original.duplicate(placementMarker, ElementPlacement.PLACEBEFORE);
-
-    const { position, angle } = data.cuts[i];
-    let [ shiftX, shiftY ] = position;
-
-    if (angle !== 0) {
-      c.rotate(angle);
-      const corrections = getCenter(c);
-      shiftX += origX - corrections[0];
-      shiftY += origY - corrections[1];
-    }
-
-    const mGo = app.concatenateTranslationMatrix(mZero, shiftX, shiftY);
-
-    c.transform(mGo, true, false, false, false, false, Transformation.CENTER);
-  }
-
-  placementMarker.remove();
-
-  /**
    * Создание Области Размещения на слое "area"
    */
   const areaLayer = getLayer(doc, "area");
@@ -124,6 +95,35 @@ export const applySolution = (data: ISolution): CEPResponse => {
   area.strokeColor = strColor;
 
   area.translate(deltaX, deltaY);
+
+  /**
+   * Слой высечек
+   */
+  const layoutLayer = getLayer(doc, "layout");
+  const placementMarker = layoutLayer.pathItems.add();
+
+  /**
+   * Размещение высечек на слой "layout"
+   */
+  for (let i = 0, l = data.cuts.length; i < l; i++) {
+    const c = original.duplicate(placementMarker, ElementPlacement.PLACEBEFORE);
+
+    const { position, angle } = data.cuts[i];
+    let [ shiftX, shiftY ] = position;
+
+    if (angle !== 0) {
+      c.rotate(angle);
+      const corrections = getCenter(c);
+      shiftX += origX - corrections[0];
+      shiftY += origY - corrections[1];
+    }
+
+    const mGo = app.concatenateTranslationMatrix(mZero, shiftX, shiftY);
+
+    c.transform(mGo, true, false, false, false, false, Transformation.CENTER);
+  }
+
+  placementMarker.remove();
 
   return { status: "success" };
 };
