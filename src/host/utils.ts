@@ -1,3 +1,5 @@
+import { ERR } from "./constants";
+
 /**
  * Create new layer with given name or return existing layer by given name
  *
@@ -55,8 +57,31 @@ const getContour = (path: PathItem): IFigure => {
   return contour;
 };
 
+/**
+ * Create CMYK Color from array of 4 number
+ *
+ * Want something like `var color = new CMYKColor([100, 0, 0, 0]);`
+ *
+ * @param {Array} arr [cyan, magenta, yellow, black]
+ * @return {CMYKColor}
+ */
+const arrayToCMYK = (arr: number[]): CMYKColor => {
+  if (arr.length !== 4) {
+    throw <ILSTError>{ message: ERR.INVALID_ARR2CMYK_PARAM };
+  }
+
+  let color = new CMYKColor();
+  color.cyan = arr[0];
+  color.magenta = arr[1];
+  color.yellow = arr[2];
+  color.black = arr[3];
+
+  return color;
+};
+
 export {
   getCenter,
   getContour,
   getLayer,
+  arrayToCMYK,
 };
