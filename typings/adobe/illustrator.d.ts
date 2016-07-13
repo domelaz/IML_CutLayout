@@ -381,7 +381,7 @@ interface Artboard extends BaseProps<Document> {
    * Ruler origin of the artboard, relative to the top left corner of the
    * artboard.
    */
-  rulerOrigin: number;
+  rulerOrigin: number[];
 
   /**
    * Pixel aspect ratio, used in ruler visualization if the units are pixels.
@@ -466,7 +466,22 @@ interface Artboards extends Props<Document> {
 interface Brushes {
 }
 
-interface CharacterStyles {}
+/**
+ * A collection of CharacterStyle objects.
+ */
+interface CharacterStyle {}
+
+interface CharacterStyles extends Collection<CharacterStyle>, Props<Document> {}
+
+/**
+ * Specifies the properties of a character contained in a text frame.
+ * A `CharacterStyle` object associates these attributes with a specific text
+ * range through its `characterAttributes` property.
+ *
+ * NOTE: Character attributes do not have default values, and are `undefined`
+ * until explicitly set.
+ */
+interface CharacterAttributes {}
 
 declare class GradientColor {
   /**
@@ -533,6 +548,13 @@ declare class CMYKColor {
    * The black color value. Range 0.0–100.0. Default: 0.0
    */
   black: number;
+
+  /**
+   * The class name of the referenced object.
+   *
+   * @readonly
+   */
+  typename: string;
 }
 
 declare class GrayColor {
@@ -692,11 +714,15 @@ declare class SpotColor {
 
 declare type Color = CMYKColor | GrayColor | LabColor | NoColor | PatternColor | RGBColor | SpotColor;
 
-declare type XOrd = number;
-declare type YOrd = number;
-declare type Point = [XOrd, YOrd];
-
-declare type PageItemParent = Document | Layer | GroupItem;
+/**
+ * This type not enforce max length of array, e.g.
+ * [0]: Point // Error
+ * [1, 1]: Point // Ok
+ * [1, 2, 3]: Point // Ok too :(
+ *
+ * @version 1.8.10
+ */
+declare type Point = [number, number];
 
 interface BaseProps<P> {
   /**
@@ -757,7 +783,6 @@ interface Collection<T> extends CollectionIterable<T> {
 }
 
 interface GraphicStyles extends Collection<GraphicStyle> {} // @fixme no `add` here
-interface PlacedItems extends Collection<PlacedItem> {}
 
 interface GraphicStyle {
   name: string;
@@ -773,15 +798,6 @@ declare class PDFSaveOptions {
   acrobatLayers: boolean;
 }
 
-interface PlacedItem {
-  file: FileInstance;
-  height: number;
-  parent: Layer;
-  position: Point;
-  remove(): void;
-  resize(scaleX: number, scaleY: number, ...additionals: boolean[]): void; // @fixme incomplete
-  width: number;
-}
 
 interface CompoundPathItem {
 }
@@ -789,25 +805,18 @@ interface CompoundPathItem {
 interface CompoundPathItems {
 }
 
-interface DataSet {
+/**
+ * A set of data used for dynamic publishing. A dataset allows you to collect
+ * a number of variables and their dynamic data into one object. You must have
+ * at least one variable bound to an art item in order to create a dataset.
+ *
+ * See the class Variable.
+ */
+interface DataSet extends BaseProps<Document> {
   /**
    * Then name of the dataset.
    */
   name: string;
-
-  /**
-   * The name of the object that contains this dataset.
-   *
-   * @readonly
-   */
-  parent: Document;
-
-  /**
-   * The class name of the referenced object.
-   *
-   * @readonly
-   */
-  typename: string;
 
   /**
    * Displays the dataset.
@@ -825,8 +834,7 @@ interface DataSet {
   update(): void;
 }
 
-interface Datasets extends Props<Document>, Collection<DataSet> {
-}
+interface Datasets extends Props<Document>, Collection<DataSet> { }
 
 interface Document {
   /**
@@ -1417,6 +1425,26 @@ interface Document {
   print(options?: PrintOptions): void;
 
   /**
+   * Rearranges artboards in the document. All arguments are optional.
+   * Default layout style is `DocumentArtboardLayout.GridByRow`.
+   *
+   * The second argument specifies the number of rows or columns, as appropriate
+   * for the chosen layout style, in the range `[1..docNumArtboards-1]`, or 1
+   * (the default) for single row/column layouts.
+   *
+   * Spacing is a number of pixels, default 20.
+   *
+   * When last argument is `true` (the default), artwork is moved with the artboards.
+   *
+   * @param {DocumentArtboardLayout} [artboardLayout]
+   * @param {number} [artboardRowsOrCols]
+   * @param {number} [artboardSpacing]
+   * @param {boolean} [artboardMoveArtwork]
+   * @returns {boolean}
+   */
+  rearrangeArtboards(artboardLayout?: DocumentArtboardLayout, artboardRowsOrCols?: number, artboardSpacing?: number, artboardMoveArtwork?: boolean): boolean;
+
+  /**
    * Saves the document in it current location.
    */
   save(): void;
@@ -1779,6 +1807,19 @@ declare enum CompressionQuality {
 declare enum CropOptions {
   Japanese,
   Standard
+}
+
+/**
+ * The layout of in the new document.
+ */
+declare enum DocumentArtboardLayout {
+  Column,
+  GridByCol,
+  GridByRow,
+  RLGridByCol,
+  RLGridByRow,
+  RLRow,
+  Row
 }
 
 /**
@@ -2191,6 +2232,20 @@ declare enum PathPointSelection {
   RIGHTDIRECTION
 }
 
+declare enum PerspectiveGridType {
+  OnePointPerspectiveGridType,
+  TwoPointPerspectiveGridType,
+  ThreePointPerspectiveGridType,
+  InvalidPerspectiveGridType
+}
+
+declare enum PerspectiveGridPlaneType {
+  GRIDLEFTPLANETYPE,
+  GRIDRIGHTPLANETYPE,
+  GRIDFLOORPLANETYPE,
+  INVALIDGRIDPLANETYPE
+}
+
 declare enum PhotoshopCompatibility {
   PHOTOSHOP6,
   PHOTOSHOP8
@@ -2394,6 +2449,15 @@ declare enum ScreenMode {
 }
 
 /**
+ * The custom color kind of a spot color
+ */
+declare enum SpotColorKind {
+  SpotCMYK,
+  SpotLAB,
+  SpotRGB
+}
+
+/**
  * The type of line capping for a path stroke
  */
 declare enum StrokeCap {
@@ -2587,6 +2651,13 @@ interface Layer extends Props<LayerParent> {
   placedItems: PlacedItems;
 
   /**
+   * The text art items contained in this layer.
+   *
+   * @readonly
+   */
+  textFrames: TextFrames;
+
+  /**
    * Moves the object.
    */
   // @fixme move(relativeObject, insertionLocation: ElementPlacement): Layer;
@@ -2670,42 +2741,32 @@ interface MeshItems extends Props<{}>{}
 
 declare type PageItem = CompoundPathItem | GraphItem | GroupItem | LegacyTextItem | MeshItem | PathItem | PlacedItem | PluginItem | RasterItem | SymbolItem | TextFrame;
 
-/**
- * A collection of page item objects. Provides complete access to all the art
- * items in an Illustrator document in the following classes:
- *
- * CompoundPathItem
- * GraphItem
- * GroupItem
- * LegacyTextItem
- * MeshItem
- * PathItem
- * PlacedItem
- * PluginItem
- * RasterItem
- * SymbolItem
- * TextFrame
- *
- * You can reference page items through the `PageItems` property in a `Document`,
- * `Layer`, or `Group`. When you access an individual item in one of these
- * collections, the reference is a page item of one of a particular type.
- * For example, if you use `PageItems` to reference a graph item, the typename
- * value of that object is `GraphItem`.
- */
-interface PageItems extends Props<{}>{}
-
-interface ParagraphStyles extends Props<{}>{}
-
-interface PathItem extends BaseProps<Layer> {
+interface IPageItem extends BaseProps<Layer | GroupItem> {
   /**
-   * If true, this path is closed.
+   * Is this object used to create a knockout.
    */
-  closed: boolean;
+  artworkKnockout: KnockoutState;
 
   /**
-   * If true, the path be filled.
+   * The mode to use when compositing this object. An object
+   * is considered composited when its opacity is set to less
+   * than 100.0 (100%).
    */
-  filled: boolean;
+  blendingMode: BlendModes;
+
+  /**
+   * The bounds of the object including stroke width and controls.
+   *
+   * @readonly
+   */
+  controlBounds: number[];
+
+  /**
+   * If `true`, this page item is editable.
+   *
+   * @readonly
+   */
+  editable: boolean;
 
   /**
    * The bounds of the object excluding stroke width.
@@ -2716,46 +2777,136 @@ interface PathItem extends BaseProps<Layer> {
   geometricBounds: number[];
 
   /**
+   * The height of the page item, calculated from the geometric bounds.
+   * Range: 0.0 to 16348.0
+   */
+  height: number;
+
+  /**
+   * If `true`, this page item is hidden.
+   */
+  hidden: boolean;
+
+  /**
+   * If `true`, this object is isolated.
+   */
+  isIsolated: boolean;
+
+  /**
+   * The layer to which this page item belongs.
+   *
+   * @readonly
+   */
+  layer: Layer;
+
+  /**
+   * The left position of the art item.
+   */
+  left: number;
+
+  /**
+   * If `true`, this page item is locked.
+   */
+  locked: boolean;
+
+  /**
    * The name of this item.
    */
   name: string;
 
   /**
-   * The path points contained in this path item.
-   *
-   * @readonly
+   * The note assigned to this item.
    */
-  pathPoints: PathPoints;
+  note: string;
 
   /**
-   * The polarity of the path.
+   * The opacity of this object, where 100.0 is completely opaque and 0.0 is completely transparent.
    */
-  polarity: PolarityValues;
+  opacity: number;
 
   /**
-   * The position (in points) of the top left corner of the pathItem object
+   * True if this item is aligned to the pixel grid.
+   */
+  pixelAligned: boolean;
+
+  /**
+   * The position (in points) of the top left corner of the item object
    * in the format [x, y]. Does not include stroke weight.
    */
   position: number[];
 
   /**
-   * The stroke color for the path.
+   * If `true`, this object is selected.
    */
-  strokeColor: Color;
+  selected: boolean;
 
   /**
-   * If true, the path should be stroked.
+   * If `true`, preserve slices.
    */
-  stroked: boolean;
+  sliced: boolean;
 
   /**
-   * Creates a duplicate of the selected object.
+   * The collection of tags associated with this page item.
+   */
+  tags: Tags;
+
+  /**
+   * The top position of the art item.
+   */
+  top: number;
+
+  /**
+   * The value of the Adobe URL tag assigned to this page item.
+   */
+  URL: string;
+
+  /**
+   * The visibility variable to which this page item path is bound.
+   */
+  visibilityVariable: Variable;
+
+  /**
+   * The object’s visible bounds, including stroke width of any objects in the illustration.
    *
-   * @param {PathItem} [relativeObject]
-   * @param {ElementPlacement} [insertionLocation]
-   * @returns {PathItem}
+   * @readonly
    */
-  duplicate(relativeObject?: PathItem, insertionLocation?: ElementPlacement): PathItem;
+  visibleBounds: number[];
+
+  /**
+   * The width of the page item, calculated from the geometric bounds. Range: 0.0 to 16348.0
+   */
+  width: number;
+
+  /**
+   * If `true`, the text frame object should be wrapped inside this object.
+   */
+  wrapInside: boolean;
+
+  /**
+   * The offset to use when wrapping text around this object.
+   */
+  wrapOffset: number;
+
+  /**
+   * If `true`, wrap text frame objects around this object (text frame must be above the object).
+   */
+  wrapped: boolean;
+
+  /**
+   * The drawing order of the art within its group or layer.
+   *
+   * @readonly
+   */
+  zOrderPosition: number;
+
+  /**
+   * Places art object(s) in a perspective grid at a specified position and grid plane.
+   *
+   * @param {number} posX
+   * @param {number} posY
+   * @param {PerspectiveGridPlaneType} perspectiveGridPlane
+   */
+  bringInPerspective(posX: number, posY: number, perspectiveGridPlane: PerspectiveGridPlaneType): void;
 
   /**
    * Rotates the art item relative to the current rotation. The object is
@@ -2763,6 +2914,11 @@ interface PathItem extends BaseProps<Layer> {
    * the value is negative.
    *
    * @param {number} angle
+   * @param {boolean} [changePositions]
+   * @param {boolean} [changeFillPatterns]
+   * @param {boolean} [changeFillGradients]
+   * @param {boolean} [changeStrokePattern]
+   * @param {Transformation} [rotateAbout]
    */
   rotate(angle: number, changePositions?: boolean, changeFillPatterns?: boolean, changeFillGradients?: boolean, changeStrokePattern?: boolean, rotateAbout?: Transformation): void;
 
@@ -2793,9 +2949,557 @@ interface PathItem extends BaseProps<Layer> {
   translate(deltaX?: number, deltaY?: number, transformObjects?: boolean, transformFillPatterns?: boolean, transformFillGradients?: boolean, transformStrokePatterns?: boolean): void;
 
   /**
+   * Arranges the art relative to other art in the group or layer.
+   *
+   * @param {ZOrderMethod} zOrderCmd
+   */
+  zOrder(zOrderCmd: ZOrderMethod): void;
+}
+
+/**
+ * A collection of page item objects. Provides complete access to all the art
+ * items in an Illustrator document in the following classes:
+ *
+ * CompoundPathItem
+ * GraphItem
+ * GroupItem
+ * LegacyTextItem
+ * MeshItem
+ * PathItem
+ * PlacedItem
+ * PluginItem
+ * RasterItem
+ * SymbolItem
+ * TextFrame
+ *
+ * You can reference page items through the `PageItems` property in a `Document`,
+ * `Layer`, or `Group`. When you access an individual item in one of these
+ * collections, the reference is a page item of one of a particular type.
+ * For example, if you use `PageItems` to reference a graph item, the typename
+ * value of that object is `GraphItem`.
+ */
+interface PageItems extends Collection<PageItem>, Props<Layer>{}
+
+/**
+ * Associates character and paragraph attributes with a style name.
+ * The style object can be used to apply those attributes to the text
+ * in a TextFrame object.
+ */
+interface ParagraphStyle extends BaseProps<Document> {
+  /**
+   * The character properties for the text range.
+   *
+   * @readonly
+   */
+  characterAttributes: CharacterAttributes;
+
+  /**
+   * The paragraph style’s name.
+   */
+  name: string;
+
+  /**
+   * The paragraph properties for the text range.
+   *
+   * @readonly;
+   */
+  paragraphAttributes: ParagraphAttributes;
+
+  /**
+   * Applies this paragraph style to the specified text item.
+   *
+   * @param {TextRange} textItem @fixme
+   * @param {boolean} clearingOverrides
+   */
+  applyTo(textItem: TextRange, clearingOverrides?: boolean): void;
+
+  /**
+   * Deletes the object.
+   */
+  remove(): void;
+}
+
+interface ParagraphStyles extends CollectionIterable<ParagraphStyle>, Props<Document> {
+  /**
+   * Creates a named paragraph style.
+   */
+  add(name: string): ParagraphStyle;
+
+  /**
+   * Gets the first element in the collection with the provided name.
+   *
+   * @param {string} name
+   * @returns {ParagraphStyle}
+   */
+  getByName(name: string): ParagraphStyle;
+
+  /**
+   * Deletes all elements in this collection.
+   */
+  removeAll(): void;
+}
+
+/**
+ * A collection of TextRange objects, with each TextRange representing
+ * a paragraph. The elements are not named; you must access them by index.
+ */
+interface Paragraphs extends CollectionIterable<TextFrame>, Props<TextFrame> {
+  /**
+   * Adds a new paragraph with specified text contents at the specified location
+   * in the current document. If location is not specified, adds the new paragraph
+   * to the containing text frame after the current text selection or insertion point.
+   *
+   * @param {string} contents
+   * @param {TextFrame} [relativeObject]
+   * @param {ElementPlacement} [insertionLocation]
+   * @returns {TextRange}
+   */
+  add(contents: string, relativeObject?: TextFrame, insertionLocation?: ElementPlacement): TextRange;
+
+  /**
+   * Adds a new paragraph with specified text contents before the current text
+   * selection or insertion point.
+   *
+   * @param {string} contents
+   * @returns {TextRange}
+   */
+  addBefore(contents: string): TextRange;
+
+  /**
+   * Deletes all elements in this collection.
+   */
+  removeAll(): void;
+}
+
+/**
+ * Specifies the properties and attributes of a paragraph contained
+ * in a text frame.
+ *
+ * Note: Paragraph attributes do not have default values, and are `undefined`
+ * until explicitly set.
+ */
+interface ParagraphAttributes {
+  /**
+   * Auto leading amount expressed as a percentage.
+   */
+  autoLeadingAmount: number;
+
+  /**
+   * If `true`, BunriKinshi is enabled.
+   */
+  bunriKinshi: boolean;
+
+  /**
+   * The Burasagari type.
+   */
+  burasagariType: BurasagariTypeEnum;
+
+  /**
+   * Desired glyph scaling, expressed as a percentage of the default character
+   * width. Range: 50.0 to 200.0. At 100.0, the width of characters is not changed.
+   */
+  desiredGlyphScaling: number;
+
+  /**
+   * Desired letter, spacing expressed as a percentage of the default kerning or
+   * tracking Range: -100.0 to 500.0. At 0, no space is added between letters.
+   * At 100.0, an entire space width is added between letters.
+   */
+  desiredLetterSpacing: number;
+
+  /**
+   * Desired word spacing, expressed as a percentage of the default space for
+   * the font. Range: 0.0 to 1000.0; at 100.00. No space is added between words.
+   */
+  desiredWordSpacing: number;
+
+  /**
+   * If `true`, the Every-line Composer is enabled. If `false`, the Single-line
+   * Composer is enabled.
+   */
+  everyLineComposer: boolean;
+
+  /**
+   * First line left indent in points.
+   */
+  firstLineIndent: number;
+
+  /**
+   * If `true`, hyphenation is enabled for capitalized words.
+   */
+  hyphenateCapitalizedWords: boolean;
+
+  /**
+   * If `true`, hyphenation is enabled for the paragraph.
+   */
+  hyphenation: boolean;
+
+  /**
+   * Hyphenation preference scale for better spacing (0) or fewer hyphens (1).
+   * Range: 0.0 to 1.0
+   */
+  hyphenationPreference: boolean;
+
+  /**
+   * The distance (in points) from the right edge of the paragraph that marks
+   * the part of the line where hyphenation is not allowed.
+   *
+   * NOTE: 0 allows all hyphenation. Valid only when everyLineComposer is `false`.
+   */
+  hyphenationZone: number;
+
+  /**
+   * Paragraph justification.
+   */
+  justification: Justification;
+
+  /**
+   * The Kinsoku Shori name.
+   */
+  kinsoku: string;
+
+  /**
+   * The preferred Kinsoku order.
+   */
+  kinsokuOrder: KinsokuOrderEnum;
+
+  /**
+   * If `true`, KurikaeshiMojiShori is enabled.
+   */
+  kurikaeshiMojiShori: boolean;
+
+  /**
+   * Auto leading type.
+   */
+  leadingType: AutoLeadingType;
+
+  /**
+   * The left indent of margin in points.
+   */
+  leftIndent: number;
+
+  /**
+   * Maximum number of consecutive hyphenated lines.
+   */
+  maximumConsecutiveHyphens: number;
+
+  /**
+   * Maximum glyph scaling, expressed as a percentage of the default character
+   * width. Range: 50.0 to 200.0; at 100.0. The width of characters is not changed.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  maximumGlyphScaling: number;
+
+  /**
+   * Maximum letter spacing, expressed as a percentage of the default kerning or
+   * tracking Range: -100.0 to 500.0; at 0. No space is added between letters.
+   * At 100.0, an entire space width is added between letters.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  maximumLetterSpacing: number;
+
+  /**
+   * Maximum word spacing, expressed as a percentage of the default space for the
+   * font. Range: 0.0 to 1000.0; at 100.00. No space is added between words.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  maximumWordSpacing: number;
+
+  /**
+   * Minimum number of characters after a hyphen.
+   */
+  minimumAfterHyphen: number;
+
+  /**
+   * Minimum number of characters before a hyphen.
+   */
+  minimumBeforeHyphen: number;
+
+  /**
+   * Minimum glyph scaling, expressed as a percentage of the default character width.
+   * Range: 50.0 to 200.0. At 100.0, the width of characters is not changed.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  minimumGlyphScaling: number;
+
+  /**
+   * Minimum number of characters for a word to be hyphenated.
+   */
+  minimumHyphenatedWordSize: number;
+
+  /**
+   * Minimum letter spacing, expressed as a percentage of the default kerning or
+   * tracking Range: -100.0 to 500.0; at 0. No space is added between letters.
+   * At 100.0, an entire space width is added between letters.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  minimumLetterSpacing: number;
+
+  /**
+   * Minimum word spacing, expressed as a percentage of the default space for the
+   * font. Range: 0.0 to 1000.0; at 100.00. No space is added between words.
+   *
+   * NOTE: Valid only for justified paragraphs.
+   */
+  minimumWordSpacing: number;
+
+  /**
+   * The Mojikumi name.
+   */
+  mojikumi: string;
+
+  /**
+   * The object’s container.
+   *
+   * @readonly
+   */
+  parent: Object;
+
+  /**
+   * Right indent of margin in points.
+   */
+  rightIndent: number;
+
+  /**
+   * If `true`, Roman hanging punctuation is enabled.
+   */
+  romanHanging: boolean;
+
+  /**
+   * Single word justification.
+   */
+  singleWordJustification: Justification;
+
+  /**
+   * Spacing after paragraph in points.
+   */
+  spaceAfter: number;
+
+  /**
+   * Spacing before paragraph in points.
+   */
+  spaceBefore: number;
+
+  /**
+   * Tab stop settings.
+   */
+  tabStops: TabStopInfo;
+
+  /**
+   * The class name of the object.
+   */
+  typename: string;
+}
+
+/**
+ * Information about the alignment, position, and other details for a tab stop
+ * in a `ParagraphAttributes` object.
+ */
+interface TabStopInfo {
+  /**
+   * The alignment of the tab stop. Default: `Left`
+   */
+  alignment: TabStopAlignment;
+
+  /**
+   * The character used for decimal tab stops. Default: `.`
+   */
+  decimalCharacter: string;
+
+  /**
+   * The leader dot character.
+   */
+  leader: string;
+
+  /**
+   * The position of the tab stop expressed in points. Default: 0.0
+   */
+  position: number;
+
+  /**
+   * The class name of the object.
+   *
+   * @readonly
+   */
+  typename: string;
+}
+
+interface PathItem extends IPageItem {
+  /**
+   * The area of this path in square points. If the area is negative, the path
+   * is wound counterclockwise. Self-intersecting paths can contain sub-areas
+   * that cancel each other out, which makes this value zero even though the
+   * path has apparent area.
+   *
+   * @readonly
+   */
+  area: number;
+
+  /**
+   * If `true`, this path should be used as a clipping path.
+   */
+  clipping: boolean;
+
+  /**
+   * If true, this path is closed.
+   */
+  closed: boolean;
+
+  /**
+   * If `true`, the even-odd rule should be used to determine "insideness".
+   */
+  evenodd: boolean;
+
+  /**
+   * The fill color of the path.
+   */
+  fillColor: Color;
+
+  /**
+   * If true, the path be filled.
+   */
+  filled: boolean;
+
+  /**
+   * If `true`, the art beneath a filled object should be overprinted.
+   */
+  fillOverprint: boolean;
+
+  /**
+   * If `true`, this path is a guide object.
+   */
+  guides: boolean;
+
+  /**
+   * The length of this path in points.
+   */
+  length: number;
+
+  /**
+   * The path points contained in this path item.
+   *
+   * @readonly
+   */
+  pathPoints: PathPoints;
+
+  /**
+   * The polarity of the path.
+   */
+  polarity: PolarityValues;
+
+  /**
+   * The resolution of the path in dots per inch (dpi).
+   */
+  resolution: number;
+
+  /**
+   * All of the selected path points in the path.
+   *
+   * @readonly
+   */
+  selectedPathPoints: PathPoints;
+
+  /**
+   * The type of line capping.
+   */
+  strokeCap: StrokeCap;
+
+  /**
+   * The stroke color for the path.
+   */
+  strokeColor: Color;
+
+  /**
+   * If true, the path should be stroked.
+   */
+  stroked: boolean;
+
+  /**
+   * Dash lengths. Set to an empty object, {} , for a solid line.
+   */
+  strokeDashes: Object;
+
+  /**
+   * The default distance into the dash pattern at which the pattern
+   * should be started.
+   */
+  strokeDashOffset: number;
+
+  /**
+   * Type of joints for the path.
+   */
+  strokeJoin: StrokeJoin;
+
+  /**
+   * When a default stroke join is set to `mitered`, this property specifies
+   * when the join will be converted to beveled (squared-off) by default.
+   * The default miter limit of 4 means that when the length of the point
+   * reaches four times the stroke weight, the join switches from a miter join
+   * to a bevel join. A value of 1 specifies a bevel join.
+   *
+   * Range: 1 to 500. Default: 4 
+   */
+  strokeMiterLimit: number;
+ 
+  /**
+   * If `true`, the art beneath a stroked object should be overprinted.
+   */
+  strokeOverprint: boolean;
+
+  /**
+   * The width of the stroke (in points).
+   */
+  strokeWidth: number;
+
+  /**
+   * Creates a duplicate of the selected object.
+   *
+   * @param {PathItem} [relativeObject]
+   * @param {ElementPlacement} [insertionLocation]
+   * @returns {PathItem}
+   */
+  duplicate(relativeObject?: PathItem, insertionLocation?: ElementPlacement): PathItem;
+
+  /**
+   * Moves the object.
+   *
+   * @param {PathItem} relativeObject
+   * @param {ElementPlacement} insertionLocation
+   * @returns {PathItem}
+   */
+  move(relativeObject: PathItem, insertionLocation: ElementPlacement): PathItem;
+
+  /**
    * Deletes this object.
    */
   remove(): void;
+
+  /**
+   * Scales the art item where scaleX is the horizontal scaling factor and
+   * scaleY is the vertical scaling factor. 100.0 = 100%.
+   *
+   * @param {number} scaleX,
+   * @param {number} scaleY
+   * @param {boolean} [changePositions]
+   * @param {boolean} [changeFillPatterns]
+   * @param {boolean} [changeFillGradients]
+   * @param {boolean} [changeStrokePattern]
+   * @param {number} [changeLineWidths]
+   * @param {Transformation} [scaleAbout]
+   */
+  resize(scaleX: number, scaleY: number, changePositions?: boolean, changeFillPatterns?: boolean, changeFillGradients?: boolean, changeStrokePattern?: boolean, changeLineWidths?: number, scaleAbout?: Transformation): void;
+
+  /**
+   * Sets the path using an array of points specified as [x, y] coordinate pairs.
+   *
+   * @param {array} array of [x, y] coordinate pairs
+   */
+  setEntirePath(pathPoints: Point[]): void;
 }
 
 interface PathItems extends Collection<PathItem>, Props<Layer> {}
@@ -2842,6 +3546,74 @@ interface Patterns extends Props<{}>{}
 
 interface Pattern{}
 
+/**
+ * An artwork item placed in a document as a linked file. For example,
+ * an artwork object created using the File > Place command in Illustrator
+ * or using the add() method of the placedItems collection object is a
+ * placed item
+ */
+interface PlacedItem extends IPageItem {
+  /**
+   * The dimensions of the placed art item regardless of transformations.
+   *
+   * @readonly
+   */
+  boundingBox: number[];
+
+  /**
+   * The content variable bound to the item.
+   */
+  contentVariable: Variable;
+
+  /**
+   * The file containing the artwork.
+   */
+  file: FileInstance;
+
+  /**
+   * The transformation matrix of the placed artwork.
+   */
+  matrix: Matrix;
+
+  /**
+   * Creates a duplicate of the selected object.
+   *
+   * @param {PageItem} [relativeObject]
+   * @param {ElementPlacement} [insertionLocation]
+   * @returns {PlacedItem}
+   */
+  duplicate(relativeObject?: PageItem, insertionLocation?: ElementPlacement): PlacedItem;
+
+  /**
+   * Embeds this art in the document. Converts the art to art item objects as needed
+   * and deletes this object.
+   */
+  embed(): void;
+
+  /**
+   * Moves the object.
+   *
+   * @param {PageItem} relativeObject
+   * @param {ElementPlacement} insertionLocation
+   * @returns {PlacedItem}
+   */
+  move(relativeObject: PageItem, insertionLocation: ElementPlacement): PlacedItem;
+
+  /**
+   * Relinks the art object with the file that defines its content.
+   *
+   * @param {FileInstance} linkFile
+   */
+  relink(linkFile: FileInstance): void;
+
+  /**
+   * Deletes this object.
+   */
+  remove(): void;
+}
+
+interface PlacedItems extends Collection<PlacedItem> {}
+
 interface PluginItem {}
 interface PluginItems extends Props<{}>{}
 
@@ -2850,9 +3622,52 @@ interface PrintOptions extends Props<{}>{}
 interface RasterItem {}
 interface RasterItems extends Props<{}>{}
 
-interface Spots extends Props<{}>{}
+/**
+ * A custom color definition contained in a SpotColor object.
+ *
+ * If no properties are specified when creating a spot, default values are
+ * provided. However, if specifying the color, you must use the same color
+ * space as the document, either CMYK or RGB. Otherwise, an error results.
+ * The new spot is added to the end of the swatches list in the Swatches palette.
+ */
+interface Spot extends BaseProps<Document> {
+  /**
+   * The color information for this spot color.
+   */
+  color: Color;
 
-interface Spot{}
+  /**
+   * The color model for this custom color.
+   */
+  colorType: ColorModel;
+
+  /**
+   * The spot color’s name.
+   */
+  name: string;
+
+  /**
+   * The kind of spot color (RGB, CMYK or LAB). This is the name of the color
+   * kind contained in the spot object.
+   *
+   * @readonly
+   */
+  spotKind: SpotColorKind;
+
+  /**
+   * Gets the internal color of a spot.
+   *
+   * @return {array}
+   */
+  getInternalColor(): number[];
+
+  /**
+   * Deletes this object.
+   */
+  remove(): void;
+}
+
+interface Spots extends Collection<Spot>, Props<Document>{}
 
 interface Stories extends Props<{}>{}
 
@@ -2866,10 +3681,108 @@ interface SymbolItems extends Props<{}>{}
 interface Tags extends Props<Application> { // @fixme check
 }
 
-interface TextFrame {}
-interface TextFrames extends Props<{}>{}
+/**
+ * The basic art item for displaying text. From the user interface, this is
+ * text created with the Text tool. There are three types of text art in
+ * Illustrator: point text, path text, and area text. The type is indicated
+ * by the text frame’s kind property.
+ *
+ * When you create a text frame, you also create a Story object. However,
+ * threading text frames combines the frames into a single story object. To
+ * thread frames, use the nextFrame or previousFrame property.
+ */
+interface TextFrame {
+  /**
+   * The text string
+   */
+  contents: string;
 
-interface Variables extends Props<{}>{}
+  position: number[];
+
+  /**
+   * The text range of the text frame.
+   *
+   * @readonly
+   */
+  textRange: TextRange;
+}
+
+interface TextFrames extends Collection<TextFrame>, Props<Layer> {
+  /**
+   * Creates an area text frame item.
+   *
+   * @param {PathItem} textPath
+   * @param {TextOrientation} [orientation]
+   * @param {TextFrame} [baseFrame]
+   * @param {boolean} [postFix]
+   * @returns {TextFrame}
+   */
+  areaText(textPath: PathItem, orientation?: TextOrientation, baseFrame?: TextFrame, postFix?: boolean): TextFrame;
+
+  /**
+   * Creates an on-path text frame item.
+   *
+   * @param {PathItem} textPath
+   * @param {number} [startTValue]
+   * @param {number} [endTValue]
+   * @param {TextOrientation} [orientation]
+   * @param {TextFrame} [baseFrame]
+   * @param {boolean} [postFix]
+   * @returns {TextFrame}
+   */
+  pathText(textPath: PathItem, startTValue?: number, endTValue?: number, orientation?: TextOrientation, baseFrame?: TextFrame, postFix?: boolean): TextFrame;
+
+  /**
+   * Creates a point text frame item.
+   *
+   * @param {array} anchor array of 2 numbers
+   * @param {TextOrientation} [orientation]
+   * @returns {TextFrame}
+   */
+  pointText(anchor: number[], orientation?: TextOrientation): TextFrame;
+}
+
+interface TextRange {
+  fillColor: Color;
+  size: number;
+}
+
+/**
+ * A document-level variable that can be imported or exported.
+ *
+ * A variable is a dynamic object used to create data-driven graphics.
+ * For an example, see Dataset. Variables are accessed in Illustrator
+ * through the Variables palette.
+ */
+interface Variable extends BaseProps<Document> {
+  /**
+   * The variable’s type.
+   */
+  kind: VariableKind;
+
+  /**
+   * The name of the variable.
+   */
+  name: string;
+
+  /**
+   * All of the artwork in the variable.
+   *
+   * @readonly
+   */
+  pageItems: PageItems;
+
+  /**
+   * Removes the variable from the collection of variables.
+   */
+  remove(): void;
+}
+
+/**
+ * The collection of `Variable` objects in the document. For an example of how
+ * to create variables, see `Using variables and datasets`.
+ */
+interface Variables extends Collection<Variable>, Props<Documents>{}
 
 interface View {
   /**

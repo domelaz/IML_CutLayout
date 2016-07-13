@@ -13,8 +13,8 @@
   },
   "filesGlob": [
     "../../typings/adobe/lib.core.d.ts",
-    "../../typings/adobe/extended-cs3.d.ts",
-    "../../typings/adobe/illustrator-cs3.d.ts",
+    "../../typings/adobe/extended.d.ts",
+    "../../typings/adobe/illustrator.d.ts",
     "../../typings/immutable/immutable.d.ts",
     "../interfaces.d.ts",
     "./**/*.ts",
@@ -22,8 +22,8 @@
   ],
   "files": [
     "../../typings/adobe/lib.core.d.ts",
-    "../../typings/adobe/extended-cs3.d.ts",
-    "../../typings/adobe/illustrator-cs3.d.ts",
+    "../../typings/adobe/extended.d.ts",
+    "../../typings/adobe/illustrator.d.ts",
     "../../typings/immutable/immutable.d.ts",
     "../interfaces.d.ts",
     "./applySolution.ts",
