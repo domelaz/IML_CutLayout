@@ -15,6 +15,7 @@ interface ICommonConfig {
 
   ilst: {
     applyingDirection: "horizontal" | "vertical";
+    areaFocusedColor: number[];
     areaLayerName: string;
     areaStrokeColor: number[];
     layoutLayerName: string;

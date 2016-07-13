@@ -194,6 +194,7 @@ export const config: ICommonConfig = {
   },
   ilst: {
     applyingDirection: "horizontal",
+    areaFocusedColor: [0, 0, 0, 15],
     areaLayerName: "area",
     areaStrokeColor: [100, 0, 0, 0],
     layoutLayerName: "layout",

@@ -32,6 +32,7 @@
     "./handlers.ts",
     "./index.ts",
     "./solution.ts",
-    "./utils.ts"
+    "./utils.ts",
+    "./zoomSolution.ts"
   ]
 }

@@ -27,3 +27,15 @@ export function getContour(message = "Getting contour...") {
   return action;
 };
 
+export function zoomSolution(next: number, prev: number) {
+  const command: CEPCommand = {
+    data: { next, prev },
+    handler: "zoomSolution",
+  };
+  const action: IReduxAction = {
+    payload: command,
+    type: a.CEP_ASYNC,
+  };
+
+  return action;
+};
