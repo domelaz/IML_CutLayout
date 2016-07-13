@@ -192,4 +192,12 @@ export const config: ICommonConfig = {
     },
     trimOffset: 3,
   },
+  ilst: {
+    applyingDirection: "horizontal",
+    areaLayerName: "area",
+    areaStrokeColor: [100, 0, 0, 0],
+    layoutLayerName: "layout",
+    originalLayerName: "original",
+    solutionGutter: 10,
+  },
 };

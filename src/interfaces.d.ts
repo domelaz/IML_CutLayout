@@ -12,6 +12,15 @@ interface ICommonConfig {
    * Данные пользователя по умолчанию
    */
   defaults: AppDataService;
+
+  ilst: {
+    applyingDirection: "horizontal" | "vertical";
+    areaLayerName: string;
+    areaStrokeColor: number[];
+    layoutLayerName: string;
+    originalLayerName: string;
+    solutionGutter: number;
+  }
 }
 
 /**

@@ -1,4 +1,5 @@
-import { getCenter, getLayer } from "./utils";
+import { config } from "../config";
+import { arrayToCMYK, getCenter, getLayer } from "./utils";
 
 /**
  * Создаём новый артборд, возвращаем дельты для позиционирования контуров
@@ -13,17 +14,17 @@ const makeArtboard = (
   name: string,
   doc: Document,
   data: ISolution,
-  orientation = "vertical"
+  orientation = config.ilst.applyingDirection
   ): number[] => {
   /**
    * Alias for orientation
    */
-  const isVert = orientation === "horizontal";
+  const isVert = orientation !== "horizontal";
 
   /**
    * Gutter between artboards
    */
-  const gutter = 10;
+  const gutter = config.ilst.solutionGutter;
 
   /**
    * Определение позиции нового артборда и вычисление смещения решения
@@ -50,11 +51,14 @@ const makeArtboard = (
 export const applySolution = (data: ISolution): CEPResponse => {
   const doc = app.activeDocument;
 
+  const { areaLayerName, areaStrokeColor, layoutLayerName, originalLayerName,
+    } = config.ilst;
+
   /**
    * Нормализация оригинала при первом запуске
    */
   if (doc.layers.length === 1) {
-    doc.layers[0].name = "original";
+    doc.layers[0].name = originalLayerName;
     // doc.rulerOrigin = [0, 0];
   }
 
@@ -63,14 +67,14 @@ export const applySolution = (data: ISolution): CEPResponse => {
   /**
    * Базовый контур и его положение относительно начала координат
    */
-  const original = doc.layers.getByName("original").pathItems[0];
+  const original = doc.layers.getByName(originalLayerName).pathItems[0];
   const [ origX, origY ] = getCenter(original);
   const mZero = app.getTranslationMatrix(deltaX - origX, deltaY - origY);
 
   /**
    * Создание Области Размещения на слое "area"
    */
-  const areaLayer = getLayer(doc, "area");
+  const areaLayer = getLayer(doc, areaLayerName);
   const area = areaLayer.pathItems.add();
 
   area.polarity = data.area.direction === -1
@@ -88,18 +92,15 @@ export const applySolution = (data: ISolution): CEPResponse => {
   area.closed = true;
   area.filled = false;
 
-  const strColor = new CMYKColor();
-  strColor.cyan = 100;
-
+  area.strokeColor = arrayToCMYK(areaStrokeColor);
   area.stroked = true;
-  area.strokeColor = strColor;
 
   area.translate(deltaX, deltaY);
 
   /**
    * Слой высечек
    */
-  const layoutLayer = getLayer(doc, "layout");
+  const layoutLayer = getLayer(doc, layoutLayerName);
   const placementMarker = layoutLayer.pathItems.add();
 
   /**
