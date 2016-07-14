@@ -97,6 +97,13 @@ export const applySolution = (data: ISolution): CEPResponse => {
 
   area.translate(deltaX, deltaY);
 
+  try {
+    const anchor = areaLayer.pathItems[areaLayer.pathItems.length - 1];
+    area.move(anchor, ElementPlacement.PLACEAFTER);
+  } catch (error) {
+    // First placement, relax.
+  }
+
   /**
    * Слой высечек
    */
@@ -107,7 +114,16 @@ export const applySolution = (data: ISolution): CEPResponse => {
    * Размещение высечек на слой "layout"
    */
   for (let i = 0, l = data.cuts.length; i < l; i++) {
-    const c = original.duplicate(placementMarker, ElementPlacement.PLACEBEFORE);
+    let anchor: PathItem;
+
+    try {
+      anchor = layoutLayer.pathItems[layoutLayer.pathItems.length - 1];
+    } catch (error) {
+      // First placement
+     anchor = placementMarker;
+    }
+
+    const c = original.duplicate(anchor, ElementPlacement.PLACEAFTER);
 
     const { position, angle } = data.cuts[i];
     let [ shiftX, shiftY ] = position;
