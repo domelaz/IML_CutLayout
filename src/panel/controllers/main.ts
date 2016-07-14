@@ -47,7 +47,7 @@ interface IMainScope extends ng.IScope, AppDataService {
 }
 
 const controller = (
-  redux,
+  redux: IReduxService,
   $scope: IMainScope,
   strings,
   solver: SolverSerivce
@@ -103,7 +103,7 @@ const controller = (
      * When Solver finished
      */
     const solverDone = () => {
-      const state = <IFlowState>redux.getState().flow;
+      const state = redux.getState().flow;
       let message;
       if (state.error) {
         message = `${state.handler}: ${state.error.message}`;
@@ -131,12 +131,12 @@ const controller = (
      * Pass Solver result to ILST
      */
     const dispatchSolution = () => {
-      const state = <IFlowState>redux.getState().flow;
+      const state = redux.getState();
 
-      if (state._queue.length === 0) {
+      if (state.flow._queue.length === 0) {
         return;
       }
-      const solution = state._queue[0];
+      const solution = state.flow._queue[0];
       redux.dispatch(applySolution(solution, messages.applying)).then(() => {
         redux.dispatch(swapSolution(solution));
         // Apply remaining or new solutions in _queue (if any)

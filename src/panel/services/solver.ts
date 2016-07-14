@@ -6,7 +6,7 @@ import { pushSolution } from "../actions";
 import { solution as solution1 } from "./3075_eticetka.ai";
 
 const service = (
-  redux,
+  redux: IReduxService,
   $timeout: ng.ITimeoutService,
   $q: ng.IQService
   ): SolverSerivce => {
@@ -73,7 +73,7 @@ const service = (
   };
 
   const staySync = () => {
-    const state = <IFlowState>redux.getState().flow;
+    const state = redux.getState().flow;
     if (deferred && !state.solverBusy) {
       stopInProgress = true;
       return stop();

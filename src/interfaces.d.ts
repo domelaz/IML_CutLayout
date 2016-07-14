@@ -95,6 +95,14 @@ interface IMaterials extends ILabeledValueItem {
   width: number[];
 }
 
+interface IReduxService {
+  connect(mapStateToTarget: (state: IRootReducer) => Object, mapDispatchToTarget: Object | Function): Function;
+  dispatch(action: IReduxAction | IReduxReducer<any>): any;
+  getState(): IRootReducer;
+  replaceReducer(): void;
+  subscribe(listener: Function): Function;
+}
+
 /**
  * Reducers
  */
@@ -113,7 +121,7 @@ interface IReduxReducer<T> {
 
 interface IReduxAction {
   type: string;
-  payload: any;
+  payload?: any;
 }
 
 interface IAction<T> extends IReduxAction {
