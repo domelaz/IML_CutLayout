@@ -170,7 +170,7 @@ const controller = (
   $scope.t = lang;
 
   /**
-   * Отражение свойств state на $scope
+   * Map store to $scope props
    */
   const mapStateToProps = (state: IRootReducer) => {
     const props = { flow: state.flow, opt: state.settings.toJS() };
@@ -207,7 +207,7 @@ const controller = (
   $scope.$watch("opt.material", (next: IMaterials) => {
     if (next) {
       const update = {
-        widths: next.width.slice(0, 1), // min width by default
+        widths: next.width.slice(0),
       };
       redux.dispatch(setAppData(update));
     }
