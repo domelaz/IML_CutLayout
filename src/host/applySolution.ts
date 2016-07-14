@@ -48,8 +48,10 @@ const makeArtboard = (
   return [deltaX, deltaY];
 };
 
-export const applySolution = (data: ISolution): CEPResponse => {
+export const applySolution = (data: IActionApplySolution): CEPResponse => {
   const doc = app.activeDocument;
+
+  const solution = data.solution;
 
   const { areaLayerName, areaStrokeColor, layoutLayerName, originalLayerName,
     reportLayerName } = config.ilst;
@@ -62,7 +64,7 @@ export const applySolution = (data: ISolution): CEPResponse => {
     doc.rulerOrigin = [0, solution.dimensions[1]];
   }
 
-  const [ deltaX, deltaY ] = makeArtboard("Solution #n", doc, data);
+  const [ deltaX, deltaY ] = makeArtboard("Solution #n", doc, solution);
 
   /**
    * Базовый контур и его положение относительно начала координат
@@ -77,12 +79,12 @@ export const applySolution = (data: ISolution): CEPResponse => {
   const areaLayer = getLayer(doc, areaLayerName);
   const area = areaLayer.pathItems.add();
 
-  area.polarity = data.area.direction === -1
+  area.polarity = solution.area.direction === -1
     ? PolarityValues.NEGATIVE
     : PolarityValues.POSITIVE;
 
-  for (let i = 0, l = data.area.points.length; i < l; i++) {
-    const { anchor, leftPosition, rightPosition } = data.area.points[i];
+  for (let i = 0, l = solution.area.points.length; i < l; i++) {
+    const { anchor, leftPosition, rightPosition } = solution.area.points[i];
     const point = area.pathPoints.add();
     point.anchor = anchor;
     point.leftDirection = leftPosition;
@@ -113,7 +115,7 @@ export const applySolution = (data: ISolution): CEPResponse => {
   /**
    * Размещение высечек на слой "layout"
    */
-  for (let i = 0, l = data.cuts.length; i < l; i++) {
+  for (let i = 0, l = solution.cuts.length; i < l; i++) {
     let anchor: PathItem;
 
     try {
@@ -125,7 +127,7 @@ export const applySolution = (data: ISolution): CEPResponse => {
 
     const c = original.duplicate(anchor, ElementPlacement.PLACEAFTER);
 
-    const { position, angle } = data.cuts[i];
+    const { position, angle } = solution.cuts[i];
     let [ shiftX, shiftY ] = position;
 
     if (angle !== 0) {

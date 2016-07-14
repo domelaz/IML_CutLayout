@@ -150,6 +150,13 @@ interface IActionCEPRunning {
   message?: string;
 }
 
+interface IActionApplySolution {
+  solution: ISolution;
+  opt?: {
+    printing: number;
+  };
+}
+
 type ISettings = Immutable.Map<string, any>
 
 interface IFlowState {

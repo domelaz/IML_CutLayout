@@ -136,8 +136,17 @@ const controller = (
       if (state.flow._queue.length === 0) {
         return;
       }
+
       const solution = state.flow._queue[0];
-      redux.dispatch(applySolution(solution, messages.applying)).then(() => {
+
+      const parcel: IActionApplySolution = {
+        solution,
+        opt: {
+          printing: <number>state.settings.get("printing"),
+        },
+      };
+
+      redux.dispatch(applySolution(parcel, messages.applying)).then(() => {
         redux.dispatch(swapSolution(solution));
         // Apply remaining or new solutions in _queue (if any)
         dispatchSolution();
@@ -268,8 +277,13 @@ const controller = (
       const solutionData = window["cep"].fs.readFile(fileName);
 
       try {
-        const solution = JSON.parse(solutionData.data);
-        redux.dispatch(applySolution(solution));
+        const solution = <ISolution>JSON.parse(solutionData.data);
+        redux.dispatch(applySolution({
+          solution,
+          opt: {
+            printing: <number>redux.getState().settings.get("printing"),
+          }
+        }));
       } catch (e) {
         redux.dispatch(toggleApp("on", "Invalid JSON provided"));
       }

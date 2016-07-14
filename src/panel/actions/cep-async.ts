@@ -1,8 +1,8 @@
 import { actions as a } from "../constants";
 
-export function applySolution(solution: ISolution, message?: string) {
+export function applySolution(data: IActionApplySolution, message?: string) {
   const command: CEPCommand = {
-    data: solution,
+    data: data,
     handler: "applySolution",
     message,
   };
