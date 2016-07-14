@@ -200,6 +200,7 @@ export const config: ICommonConfig = {
     areaStrokeColor: [100, 0, 0, 0],
     layoutLayerName: "layout",
     originalLayerName: "original",
+    reportLayerName: "report",
     solutionGutter: 10,
   },
 };

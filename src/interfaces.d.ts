@@ -20,6 +20,7 @@ interface ICommonConfig {
     areaStrokeColor: number[];
     layoutLayerName: string;
     originalLayerName: string;
+    reportLayerName: string;
     solutionGutter: number;
   }
 }

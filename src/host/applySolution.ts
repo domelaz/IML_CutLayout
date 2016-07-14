@@ -52,7 +52,7 @@ export const applySolution = (data: ISolution): CEPResponse => {
   const doc = app.activeDocument;
 
   const { areaLayerName, areaStrokeColor, layoutLayerName, originalLayerName,
-    } = config.ilst;
+    reportLayerName } = config.ilst;
 
   /**
    * Нормализация оригинала при первом запуске
@@ -141,6 +141,8 @@ export const applySolution = (data: ISolution): CEPResponse => {
   }
 
   placementMarker.remove();
+
+  const reportLayer = getLayer(doc, reportLayerName);
 
   return { status: "success" };
 };
