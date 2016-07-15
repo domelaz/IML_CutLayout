@@ -1,4 +1,6 @@
 import { config } from "../config";
+import { STRINGS as t } from "./constants";
+import { getReportData } from "./reportData";
 import { arrayToCMYK, getCenter, getLayer } from "./utils";
 
 /**
@@ -144,7 +146,31 @@ export const applySolution = (data: IActionApplySolution): CEPResponse => {
 
   placementMarker.remove();
 
-  const reportLayer = getLayer(doc, reportLayerName);
+  if (data.opt) {
+    const statsData = getReportData({
+      area: Math.abs(area.area),
+      contour: Math.abs(original.area),
+      contours: solution.cuts.length,
+      height: solution.dimensions[1],
+      printing: data.opt.printing,
+    });
+
+    const stats = [
+      `${t.cuts}:\t\t${solution.cuts.length}`,
+      `${t.printing}:\t\t\t\t${data.opt.printing}`,
+      `${t.obloy}:\t\t\t${statsData.obloy}%`,
+      `${t.material}:\t${statsData.material}м`,
+    ];
+
+    // document.write() statistics
+    const reportLayer = getLayer(doc, reportLayerName);
+    const report = reportLayer.textFrames.add();
+
+    report.textRange.size = 48;
+    report.textRange.fillColor = arrayToCMYK(areaStrokeColor);
+    report.contents = stats.join("\n");
+    report.position = [ deltaX + 20, deltaY - 20 ];
+  }
 
   return { status: "success" };
 };

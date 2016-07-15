@@ -5,6 +5,14 @@ const ERR = {
   NO_TARGET_CONTOUR: "Cannot find target contour",
 };
 
+const STRINGS = {
+  cuts: "Высечек",
+  material: "Материал",
+  obloy: "Облой",
+  printing: "Тираж",
+};
+
 export {
   ERR,
+  STRINGS,
 }
