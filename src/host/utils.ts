@@ -79,9 +79,21 @@ const arrayToCMYK = (arr: number[]): CMYKColor => {
   return color;
 };
 
+/**
+ * Round float number at `exp` digit after dot
+ *
+ * @param {number} [exp] Exponent, default 2
+ * @return {number}
+ */
+const round2 = (val: number, exp = 2): number => {
+  const pow = Math.pow(10, exp);
+  return Math.round(val * pow) / pow;
+};
+
 export {
   getCenter,
   getContour,
   getLayer,
   arrayToCMYK,
+  round2,
 };
