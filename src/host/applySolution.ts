@@ -59,7 +59,7 @@ export const applySolution = (data: ISolution): CEPResponse => {
    */
   if (doc.layers.length === 1) {
     doc.layers[0].name = originalLayerName;
-    // doc.rulerOrigin = [0, 0];
+    doc.rulerOrigin = [0, solution.dimensions[1]];
   }
 
   const [ deltaX, deltaY ] = makeArtboard("Solution #n", doc, data);
